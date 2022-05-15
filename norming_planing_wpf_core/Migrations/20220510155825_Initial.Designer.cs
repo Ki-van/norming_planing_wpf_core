@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using norming_planing_wpf_core;
@@ -12,9 +13,10 @@ using norming_planing_wpf_core;
 namespace norming_planing_wpf_core.Migrations
 {
     [DbContext(typeof(AcszmkdbContext))]
-    partial class AcszmkdbContextModelSnapshot : ModelSnapshot
+    [Migration("20220510155825_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
