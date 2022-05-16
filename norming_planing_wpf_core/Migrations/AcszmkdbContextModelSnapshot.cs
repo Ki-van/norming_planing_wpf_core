@@ -21,6 +21,7 @@ namespace norming_planing_wpf_core.Migrations
                 .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "draft_status", new[] { "defining", "planning", "finished", "rejected" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("norming_planing_wpf_core.Customer", b =>
@@ -38,12 +39,35 @@ namespace norming_planing_wpf_core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Заказчик1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Заказчик2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Заказчик3"
+                        });
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Detail", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("Code")
                         .HasColumnType("text");
+
+                    b.Property<string>("MarkCode")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MarkDraftId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("HolesCount")
                         .HasColumnType("integer");
@@ -51,17 +75,41 @@ namespace norming_planing_wpf_core.Migrations
                     b.Property<int>("HolesDiamtr")
                         .HasColumnType("integer");
 
-                    b.Property<string>("MarkId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<double?>("MainLenght")
+                        .HasColumnType("double precision");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<long>("OppositeCount")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("MarkId");
+                    b.Property<int>("SteelGradeId")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("StraightCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TotalCount")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bigint")
+                        .HasComputedColumnSql("\"StraightCount\" + \"OppositeCount\"", true);
+
+                    b.Property<double>("TotalWeight")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("double precision")
+                        .HasComputedColumnSql("(\"StraightCount\" + \"OppositeCount\") * \"Weight\"", true);
+
+                    b.Property<double>("Weight")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Code", "MarkCode", "MarkDraftId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("SteelGradeId");
+
+                    b.HasIndex("MarkCode", "MarkDraftId");
 
                     b.ToTable("Details");
                 });
@@ -75,7 +123,9 @@ namespace norming_planing_wpf_core.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
@@ -87,11 +137,40 @@ namespace norming_planing_wpf_core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DraftStatus>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("draft_status")
+                        .HasDefaultValue(DraftStatus.Defining);
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Drafts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CustomerId = 1,
+                            Deadline = new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc),
+                            Name = "Свинокомлекс"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CustomerId = 2,
+                            Deadline = new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc),
+                            Name = "РГС"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CustomerId = 3,
+                            Deadline = new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc),
+                            Name = "Проект 3",
+                            Status = DraftStatus.Planning
+                        });
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Instrument", b =>
@@ -113,17 +192,34 @@ namespace norming_planing_wpf_core.Migrations
 
             modelBuilder.Entity("norming_planing_wpf_core.Mark", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("Code")
                         .HasColumnType("text");
 
                     b.Property<int>("DraftId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code", "DraftId");
 
                     b.HasIndex("DraftId");
 
                     b.ToTable("Marks");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.Material", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Material");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.NormingMap", b =>
@@ -158,6 +254,23 @@ namespace norming_planing_wpf_core.Migrations
                     b.HasIndex("TOTypeId");
 
                     b.ToTable("NormingMaps");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.SteelGrade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SteelGrade");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.TO", b =>
@@ -214,28 +327,47 @@ namespace norming_planing_wpf_core.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("MarkId")
+                    b.Property<string>("MarkCode")
                         .HasColumnType("text");
+
+                    b.Property<int?>("MarkDraftId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MarkId");
+                    b.HasIndex("MarkCode", "MarkDraftId");
 
                     b.ToTable("TPs");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Detail", b =>
                 {
+                    b.HasOne("norming_planing_wpf_core.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("norming_planing_wpf_core.SteelGrade", "SteelGrade")
+                        .WithMany()
+                        .HasForeignKey("SteelGradeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("norming_planing_wpf_core.Mark", "Mark")
                         .WithMany("Details")
-                        .HasForeignKey("MarkId")
+                        .HasForeignKey("MarkCode", "MarkDraftId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Mark");
+
+                    b.Navigation("Material");
+
+                    b.Navigation("SteelGrade");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Draft", b =>
@@ -300,7 +432,7 @@ namespace norming_planing_wpf_core.Migrations
                 {
                     b.HasOne("norming_planing_wpf_core.Mark", null)
                         .WithMany("TechProcesses")
-                        .HasForeignKey("MarkId");
+                        .HasForeignKey("MarkCode", "MarkDraftId");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Draft", b =>

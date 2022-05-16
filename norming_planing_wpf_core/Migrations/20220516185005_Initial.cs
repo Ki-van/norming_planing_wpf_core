@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using norming_planing_wpf_core;
 
 #nullable disable
 
@@ -11,6 +12,9 @@ namespace norming_planing_wpf_core.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:draft_status", "defining,planning,finished,rejected");
+
             migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
@@ -38,6 +42,32 @@ namespace norming_planing_wpf_core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Material",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Material", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SteelGrade",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SteelGrade", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TOTypes",
                 columns: table => new
                 {
@@ -57,8 +87,9 @@ namespace norming_planing_wpf_core.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     Deadline = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<DraftStatus>(type: "draft_status", nullable: false, defaultValue: DraftStatus.Defining),
                     CustomerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -109,12 +140,12 @@ namespace norming_planing_wpf_core.Migrations
                 name: "Marks",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
                     DraftId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Marks", x => x.Id);
+                    table.PrimaryKey("PK_Marks", x => new { x.Code, x.DraftId });
                     table.ForeignKey(
                         name: "FK_Marks_Drafts_DraftId",
                         column: x => x.DraftId,
@@ -127,19 +158,39 @@ namespace norming_planing_wpf_core.Migrations
                 name: "Details",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    MarkId = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    MarkCode = table.Column<string>(type: "text", nullable: false),
+                    MarkDraftId = table.Column<int>(type: "integer", nullable: false),
+                    StraightCount = table.Column<long>(type: "bigint", nullable: false),
+                    OppositeCount = table.Column<long>(type: "bigint", nullable: false),
+                    TotalCount = table.Column<long>(type: "bigint", nullable: false, computedColumnSql: "\"StraightCount\" + \"OppositeCount\"", stored: true),
+                    Weight = table.Column<double>(type: "double precision", nullable: false),
+                    TotalWeight = table.Column<double>(type: "double precision", nullable: false, computedColumnSql: "(\"StraightCount\" + \"OppositeCount\") * \"Weight\"", stored: true),
+                    MainLenght = table.Column<double>(type: "double precision", nullable: true),
                     HolesCount = table.Column<int>(type: "integer", nullable: false),
-                    HolesDiamtr = table.Column<int>(type: "integer", nullable: false)
+                    HolesDiamtr = table.Column<int>(type: "integer", nullable: false),
+                    MaterialId = table.Column<int>(type: "integer", nullable: false),
+                    SteelGradeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Details", x => x.Id);
+                    table.PrimaryKey("PK_Details", x => new { x.Code, x.MarkCode, x.MarkDraftId });
                     table.ForeignKey(
-                        name: "FK_Details_Marks_MarkId",
-                        column: x => x.MarkId,
+                        name: "FK_Details_Marks_MarkCode_MarkDraftId",
+                        columns: x => new { x.MarkCode, x.MarkDraftId },
                         principalTable: "Marks",
+                        principalColumns: new[] { "Code", "DraftId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Details_Material_MaterialId",
+                        column: x => x.MaterialId,
+                        principalTable: "Material",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Details_SteelGrade_SteelGradeId",
+                        column: x => x.SteelGradeId,
+                        principalTable: "SteelGrade",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -151,16 +202,17 @@ namespace norming_planing_wpf_core.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Order = table.Column<int>(type: "integer", nullable: false),
-                    MarkId = table.Column<string>(type: "text", nullable: true)
+                    MarkCode = table.Column<string>(type: "text", nullable: true),
+                    MarkDraftId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TPs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TPs_Marks_MarkId",
-                        column: x => x.MarkId,
+                        name: "FK_TPs_Marks_MarkCode_MarkDraftId",
+                        columns: x => new { x.MarkCode, x.MarkDraftId },
                         principalTable: "Marks",
-                        principalColumn: "Id");
+                        principalColumns: new[] { "Code", "DraftId" });
                 });
 
             migrationBuilder.CreateTable(
@@ -189,10 +241,44 @@ namespace norming_planing_wpf_core.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "Customers",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Заказчик1" },
+                    { 2, "Заказчик2" },
+                    { 3, "Заказчик3" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Drafts",
+                columns: new[] { "Id", "CustomerId", "Deadline", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc), "Свинокомлекс" },
+                    { 2, 2, new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc), "РГС" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Drafts",
+                columns: new[] { "Id", "CustomerId", "Deadline", "Name", "Status" },
+                values: new object[] { 3, 3, new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc), "Проект 3", DraftStatus.Planning });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Details_MarkId",
+                name: "IX_Details_MarkCode_MarkDraftId",
                 table: "Details",
-                column: "MarkId");
+                columns: new[] { "MarkCode", "MarkDraftId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Details_MaterialId",
+                table: "Details",
+                column: "MaterialId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Details_SteelGradeId",
+                table: "Details",
+                column: "SteelGradeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Drafts_CustomerId",
@@ -230,9 +316,9 @@ namespace norming_planing_wpf_core.Migrations
                 column: "TypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TPs_MarkId",
+                name: "IX_TPs_MarkCode_MarkDraftId",
                 table: "TPs",
-                column: "MarkId");
+                columns: new[] { "MarkCode", "MarkDraftId" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -245,6 +331,12 @@ namespace norming_planing_wpf_core.Migrations
 
             migrationBuilder.DropTable(
                 name: "TOs");
+
+            migrationBuilder.DropTable(
+                name: "Material");
+
+            migrationBuilder.DropTable(
+                name: "SteelGrade");
 
             migrationBuilder.DropTable(
                 name: "Instruments");
