@@ -13,7 +13,8 @@ namespace norming_planing_wpf_core.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:draft_status", "defining,planning,finished,rejected");
+                .Annotation("Npgsql:Enum:draft_status", "defining,planning,finished,rejected")
+                .Annotation("Npgsql:Enum:shift_task_status", "waiting,performed,complited,defected");
 
             migrationBuilder.CreateTable(
                 name: "Customers",
@@ -26,6 +27,20 @@ namespace norming_planing_wpf_core.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeePositions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Position = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeePositions", x => x.Id);
+                    table.UniqueConstraint("AK_EmployeePositions_Position", x => x.Position);
                 });
 
             migrationBuilder.CreateTable(
@@ -42,7 +57,7 @@ namespace norming_planing_wpf_core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Material",
+                name: "Materials",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -51,11 +66,11 @@ namespace norming_planing_wpf_core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Material", x => x.Id);
+                    table.PrimaryKey("PK_Materials", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SteelGrade",
+                name: "SteelGrades",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -64,7 +79,7 @@ namespace norming_planing_wpf_core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SteelGrade", x => x.Id);
+                    table.PrimaryKey("PK_SteelGrades", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,6 +93,7 @@ namespace norming_planing_wpf_core.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TOTypes", x => x.Id);
+                    table.UniqueConstraint("AK_TOTypes_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,6 +115,50 @@ namespace norming_planing_wpf_core.Migrations
                         name: "FK_Drafts_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Passport = table.Column<string>(type: "text", nullable: false),
+                    Fullname = table.Column<string>(type: "text", nullable: false),
+                    PositionId = table.Column<int>(type: "integer", nullable: false),
+                    Qualification = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Passport);
+                    table.ForeignKey(
+                        name: "FK_Employees_EmployeePositions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "EmployeePositions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeePositionTOType",
+                columns: table => new
+                {
+                    EmployeePositionsId = table.Column<int>(type: "integer", nullable: false),
+                    TOTypesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeePositionTOType", x => new { x.EmployeePositionsId, x.TOTypesId });
+                    table.ForeignKey(
+                        name: "FK_EmployeePositionTOType_EmployeePositions_EmployeePositionsId",
+                        column: x => x.EmployeePositionsId,
+                        principalTable: "EmployeePositions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeePositionTOType_TOTypes_TOTypesId",
+                        column: x => x.TOTypesId,
+                        principalTable: "TOTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -182,15 +242,15 @@ namespace norming_planing_wpf_core.Migrations
                         principalColumns: new[] { "Code", "DraftId" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Details_Material_MaterialId",
+                        name: "FK_Details_Materials_MaterialId",
                         column: x => x.MaterialId,
-                        principalTable: "Material",
+                        principalTable: "Materials",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Details_SteelGrade_SteelGradeId",
+                        name: "FK_Details_SteelGrades_SteelGradeId",
                         column: x => x.SteelGradeId,
-                        principalTable: "SteelGrade",
+                        principalTable: "SteelGrades",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -241,6 +301,54 @@ namespace norming_planing_wpf_core.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ShiftTasks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TOId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<ShiftTaskStatus>(type: "shift_task_status", nullable: false),
+                    NormTime = table.Column<double>(type: "double precision", nullable: true),
+                    NormPrice = table.Column<double>(type: "double precision", nullable: true),
+                    Issue = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShiftTasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShiftTasks_TOs_TOId",
+                        column: x => x.TOId,
+                        principalTable: "TOs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskParticipation",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<string>(type: "text", nullable: false),
+                    ShiftTaskId = table.Column<int>(type: "integer", nullable: false),
+                    ParticipationPercentage = table.Column<double>(type: "double precision", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskParticipation", x => new { x.EmployeeId, x.ShiftTaskId });
+                    table.ForeignKey(
+                        name: "FK_TaskParticipation_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Passport",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TaskParticipation_ShiftTasks_ShiftTaskId",
+                        column: x => x.ShiftTaskId,
+                        principalTable: "ShiftTasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Customers",
                 columns: new[] { "Id", "Name" },
@@ -286,6 +394,16 @@ namespace norming_planing_wpf_core.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeePositionTOType_TOTypesId",
+                table: "EmployeePositionTOType",
+                column: "TOTypesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_PositionId",
+                table: "Employees",
+                column: "PositionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Marks_DraftId",
                 table: "Marks",
                 column: "DraftId");
@@ -304,6 +422,16 @@ namespace norming_planing_wpf_core.Migrations
                 name: "IX_NormingMaps_TOTypeId",
                 table: "NormingMaps",
                 column: "TOTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShiftTasks_TOId",
+                table: "ShiftTasks",
+                column: "TOId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskParticipation_ShiftTaskId",
+                table: "TaskParticipation",
+                column: "ShiftTaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TOs_TPId",
@@ -327,19 +455,34 @@ namespace norming_planing_wpf_core.Migrations
                 name: "Details");
 
             migrationBuilder.DropTable(
+                name: "EmployeePositionTOType");
+
+            migrationBuilder.DropTable(
                 name: "NormingMaps");
 
             migrationBuilder.DropTable(
-                name: "TOs");
+                name: "TaskParticipation");
 
             migrationBuilder.DropTable(
-                name: "Material");
+                name: "Materials");
 
             migrationBuilder.DropTable(
-                name: "SteelGrade");
+                name: "SteelGrades");
 
             migrationBuilder.DropTable(
                 name: "Instruments");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
+
+            migrationBuilder.DropTable(
+                name: "ShiftTasks");
+
+            migrationBuilder.DropTable(
+                name: "EmployeePositions");
+
+            migrationBuilder.DropTable(
+                name: "TOs");
 
             migrationBuilder.DropTable(
                 name: "TOTypes");

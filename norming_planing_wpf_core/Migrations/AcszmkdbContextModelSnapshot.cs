@@ -22,7 +22,23 @@ namespace norming_planing_wpf_core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "draft_status", new[] { "defining", "planning", "finished", "rejected" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "shift_task_status", new[] { "waiting", "performed", "complited", "defected" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("EmployeePositionTOType", b =>
+                {
+                    b.Property<int>("EmployeePositionsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TOTypesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("EmployeePositionsId", "TOTypesId");
+
+                    b.HasIndex("TOTypesId");
+
+                    b.ToTable("EmployeePositionTOType");
+                });
 
             modelBuilder.Entity("norming_planing_wpf_core.Customer", b =>
                 {
@@ -173,6 +189,47 @@ namespace norming_planing_wpf_core.Migrations
                         });
                 });
 
+            modelBuilder.Entity("norming_planing_wpf_core.Employee", b =>
+                {
+                    b.Property<string>("Passport")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Fullname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PositionId")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("Qualification")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Passport");
+
+                    b.HasIndex("PositionId");
+
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.EmployeePosition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Position");
+
+                    b.ToTable("EmployeePositions");
+                });
+
             modelBuilder.Entity("norming_planing_wpf_core.Instrument", b =>
                 {
                     b.Property<int>("Id")
@@ -219,7 +276,7 @@ namespace norming_planing_wpf_core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Material");
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.NormingMap", b =>
@@ -256,6 +313,36 @@ namespace norming_planing_wpf_core.Migrations
                     b.ToTable("NormingMaps");
                 });
 
+            modelBuilder.Entity("norming_planing_wpf_core.ShiftTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Issue")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double?>("NormPrice")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("NormTime")
+                        .HasColumnType("double precision");
+
+                    b.Property<ShiftTaskStatus>("Status")
+                        .HasColumnType("shift_task_status");
+
+                    b.Property<int>("TOId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TOId");
+
+                    b.ToTable("ShiftTasks");
+                });
+
             modelBuilder.Entity("norming_planing_wpf_core.SteelGrade", b =>
                 {
                     b.Property<int>("Id")
@@ -270,7 +357,25 @@ namespace norming_planing_wpf_core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SteelGrade");
+                    b.ToTable("SteelGrades");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.TaskParticipation", b =>
+                {
+                    b.Property<string>("EmployeeId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ShiftTaskId")
+                        .HasColumnType("integer");
+
+                    b.Property<double?>("ParticipationPercentage")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("EmployeeId", "ShiftTaskId");
+
+                    b.HasIndex("ShiftTaskId");
+
+                    b.ToTable("TaskParticipation", (string)null);
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.TO", b =>
@@ -316,6 +421,8 @@ namespace norming_planing_wpf_core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name");
+
                     b.ToTable("TOTypes");
                 });
 
@@ -341,6 +448,21 @@ namespace norming_planing_wpf_core.Migrations
                     b.HasIndex("MarkCode", "MarkDraftId");
 
                     b.ToTable("TPs");
+                });
+
+            modelBuilder.Entity("EmployeePositionTOType", b =>
+                {
+                    b.HasOne("norming_planing_wpf_core.EmployeePosition", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeePositionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("norming_planing_wpf_core.TOType", null)
+                        .WithMany()
+                        .HasForeignKey("TOTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Detail", b =>
@@ -381,6 +503,17 @@ namespace norming_planing_wpf_core.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("norming_planing_wpf_core.Employee", b =>
+                {
+                    b.HasOne("norming_planing_wpf_core.EmployeePosition", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Position");
+                });
+
             modelBuilder.Entity("norming_planing_wpf_core.Mark", b =>
                 {
                     b.HasOne("norming_planing_wpf_core.Draft", "Draft")
@@ -415,6 +548,36 @@ namespace norming_planing_wpf_core.Migrations
                     b.Navigation("TOType");
                 });
 
+            modelBuilder.Entity("norming_planing_wpf_core.ShiftTask", b =>
+                {
+                    b.HasOne("norming_planing_wpf_core.TO", "TO")
+                        .WithMany()
+                        .HasForeignKey("TOId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TO");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.TaskParticipation", b =>
+                {
+                    b.HasOne("norming_planing_wpf_core.Employee", "Employee")
+                        .WithMany("Participations")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("norming_planing_wpf_core.ShiftTask", "ShiftTask")
+                        .WithMany("Participations")
+                        .HasForeignKey("ShiftTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("ShiftTask");
+                });
+
             modelBuilder.Entity("norming_planing_wpf_core.TO", b =>
                 {
                     b.HasOne("norming_planing_wpf_core.TP", null)
@@ -440,11 +603,21 @@ namespace norming_planing_wpf_core.Migrations
                     b.Navigation("Marks");
                 });
 
+            modelBuilder.Entity("norming_planing_wpf_core.Employee", b =>
+                {
+                    b.Navigation("Participations");
+                });
+
             modelBuilder.Entity("norming_planing_wpf_core.Mark", b =>
                 {
                     b.Navigation("Details");
 
                     b.Navigation("TechProcesses");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.ShiftTask", b =>
+                {
+                    b.Navigation("Participations");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.TP", b =>

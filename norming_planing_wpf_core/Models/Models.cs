@@ -34,6 +34,7 @@ namespace norming_planing_wpf_core
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public ICollection<EmployeePosition> EmployeePositions { get; set; }
     }
 
     public class NormingMap: IDisposable

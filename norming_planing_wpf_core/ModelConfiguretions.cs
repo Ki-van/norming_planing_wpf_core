@@ -33,4 +33,35 @@ namespace norming_planing_wpf_core
                 .HasComputedColumnSql(@"(""StraightCount"" + ""OppositeCount"") * ""Weight""", stored:true);
         }
     }
+
+    class EmployeePositionConfiguration : IEntityTypeConfiguration<EmployeePosition>
+    {
+        public void Configure(EntityTypeBuilder<EmployeePosition> builder)
+        {
+            builder.HasAlternateKey(ep => ep.Position);
+        }
+    }
+    
+    class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
+    {
+        public void Configure(EntityTypeBuilder<Employee> builder)
+        {
+            builder.HasMany(e => e.ShiftTasks)
+                .WithMany(st => st.Employees)
+                .UsingEntity<TaskParticipation>(
+                    j => j
+                    .HasOne(tp => tp.ShiftTask)
+                    .WithMany(st => st.Participations)
+                    .HasForeignKey(tp => tp.ShiftTaskId),
+                    j => j
+                    .HasOne(tp => tp.Employee)
+                    .WithMany(e => e.Participations)
+                    .HasForeignKey(tp => tp.EmployeeId),
+                    j =>
+                    {
+                        j.HasKey(j => new { j.EmployeeId, j.ShiftTaskId });
+                        j.ToTable("TaskParticipation");
+                    });
+        }
+    }
 }
