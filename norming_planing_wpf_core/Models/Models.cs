@@ -8,12 +8,16 @@ namespace norming_planing_wpf_core
     public class Mark
     {
         public string Code { get; set; }
+        public string Name { get; set; }
+        public uint StraightCount { get; set; } = 1;
+        public uint OppositeCount { get; set; } = 0;
+        public uint TotalCount { get; set; }
         public int DraftId { get; set; }
         public Draft Draft { get; set; }
         public ICollection<Detail> Details { get; set; }
         public ICollection<TP>? TechProcesses { get; set; }
     }
-
+   
     public class TP
     {
         public int Id { get; set; }

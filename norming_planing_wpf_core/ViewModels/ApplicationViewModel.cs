@@ -11,7 +11,8 @@ namespace norming_planing_wpf_core
     {
         #region Fields
 
-        private ICommand _changePageCommand;
+        private ICommand? _changePageCommand;
+        private ICommand? _newDraftCommand;
 
         private IPageViewModel _currentPageViewModel;
         private List<IPageViewModel> _pageViewModels;
@@ -31,6 +32,22 @@ namespace norming_planing_wpf_core
         }
 
         #region Properties / Commands
+        public ICommand NewDraftCommand
+        {
+            get
+            {
+                if (_newDraftCommand == null)
+                {
+                    _newDraftCommand = new RelayCommand( p =>
+                    {
+                        DraftExplorerView newDraftView = new DraftExplorerView(null);
+                        newDraftView.ShowDialog();
+                    });
+                }
+
+                return _newDraftCommand;
+            }
+        }
 
         public ICommand ChangePageCommand
         {
@@ -46,7 +63,6 @@ namespace norming_planing_wpf_core
                 return _changePageCommand;
             }
         }
-
         public List<IPageViewModel> PageViewModels
         {
             get
@@ -77,7 +93,6 @@ namespace norming_planing_wpf_core
         #endregion
 
         #region Methods
-
         private void ChangeViewModel(IPageViewModel viewModel)
         {
             if (!PageViewModels.Contains(viewModel))

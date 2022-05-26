@@ -3,9 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:norming_planing_wpf_core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <local:HomeViewModel/>
+    </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="Expander">
             <Setter Property="FontSize" Value="18"></Setter>
@@ -16,12 +20,27 @@
     </UserControl.Resources>
     <Grid Background="White" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.25*"/>
+            <ColumnDefinition Width="0.38*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel  Margin="5,5,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.19*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.19*" />
+        </Grid.RowDefinitions>
+        <StackPanel  Margin="20,0,5,0" Grid.Row="1">
             <Expander Header="Планируемые" IsExpanded="True">
-                <ListBox d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                <ListBox ItemsSource="{Binding Drafts}" SelectedItem="{Binding SelectedDraft, BindsDirectlyToSource=True}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="2">
+                                <TextBlock FontSize="14" Text="{Binding Path=Name}" />
+                                <TextBlock Text="{Binding Path=Deadline}" />
+                                <TextBlock Text="{Binding Path=Customer.Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Expander>
             <Expander  Header="Завершенные" IsExpanded="False">
 

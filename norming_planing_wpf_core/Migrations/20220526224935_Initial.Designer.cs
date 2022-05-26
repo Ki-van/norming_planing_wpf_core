@@ -13,7 +13,7 @@ using norming_planing_wpf_core;
 namespace norming_planing_wpf_core.Migrations
 {
     [DbContext(typeof(AcszmkdbContext))]
-    [Migration("20220517201338_Initial")]
+    [Migration("20220526224935_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,22 +87,24 @@ namespace norming_planing_wpf_core.Migrations
                     b.Property<int>("MarkDraftId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HolesCount")
+                    b.Property<int?>("HolesCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HolesDiamtr")
+                    b.Property<int?>("HolesDiamtr")
                         .HasColumnType("integer");
 
                     b.Property<double?>("MainLenght")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("MaterialId")
+                    b.Property<int?>("MaterialId")
                         .HasColumnType("integer");
 
                     b.Property<long>("OppositeCount")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValueSql("0");
 
-                    b.Property<int>("SteelGradeId")
+                    b.Property<int?>("SteelGradeId")
                         .HasColumnType("integer");
 
                     b.Property<long>("StraightCount")
@@ -130,6 +132,48 @@ namespace norming_planing_wpf_core.Migrations
                     b.HasIndex("MarkCode", "MarkDraftId");
 
                     b.ToTable("Details");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "Деталь 1",
+                            MarkCode = "М1",
+                            MarkDraftId = 1,
+                            MaterialId = 1,
+                            SteelGradeId = 1,
+                            StraightCount = 2L,
+                            Weight = 20.0
+                        },
+                        new
+                        {
+                            Code = "Деталь 2",
+                            MarkCode = "М1",
+                            MarkDraftId = 1,
+                            MaterialId = 1,
+                            SteelGradeId = 1,
+                            StraightCount = 2L,
+                            Weight = 20.0
+                        },
+                        new
+                        {
+                            Code = "Деталь 1",
+                            MarkCode = "М2",
+                            MarkDraftId = 1,
+                            MaterialId = 2,
+                            SteelGradeId = 1,
+                            StraightCount = 2L,
+                            Weight = 20.0
+                        },
+                        new
+                        {
+                            Code = "Деталь 2",
+                            MarkCode = "М2",
+                            MarkDraftId = 1,
+                            MaterialId = 2,
+                            SteelGradeId = 1,
+                            StraightCount = 2L,
+                            Weight = 20.0
+                        });
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Draft", b =>
@@ -171,21 +215,21 @@ namespace norming_planing_wpf_core.Migrations
                         {
                             Id = 1,
                             CustomerId = 1,
-                            Deadline = new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc),
+                            Deadline = new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6853),
                             Name = "Свинокомлекс"
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
-                            Deadline = new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc),
+                            Deadline = new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6856),
                             Name = "РГС"
                         },
                         new
                         {
                             Id = 3,
                             CustomerId = 3,
-                            Deadline = new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc),
+                            Deadline = new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6857),
                             Name = "Проект 3",
                             Status = DraftStatus.Planning
                         });
@@ -257,11 +301,76 @@ namespace norming_planing_wpf_core.Migrations
                     b.Property<int>("DraftId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("OppositeCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StraightCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TotalCount")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bigint")
+                        .HasComputedColumnSql("\"StraightCount\" + \"OppositeCount\"", true);
+
                     b.HasKey("Code", "DraftId");
 
                     b.HasIndex("DraftId");
 
                     b.ToTable("Marks");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "М1",
+                            DraftId = 1,
+                            Name = "Балка1",
+                            OppositeCount = 0L,
+                            StraightCount = 2L
+                        },
+                        new
+                        {
+                            Code = "М2",
+                            DraftId = 1,
+                            Name = "Балка2",
+                            OppositeCount = 0L,
+                            StraightCount = 2L
+                        },
+                        new
+                        {
+                            Code = "М3",
+                            DraftId = 1,
+                            Name = "Балка3",
+                            OppositeCount = 0L,
+                            StraightCount = 2L
+                        },
+                        new
+                        {
+                            Code = "М1",
+                            DraftId = 2,
+                            Name = "Балка4",
+                            OppositeCount = 0L,
+                            StraightCount = 2L
+                        },
+                        new
+                        {
+                            Code = "М2",
+                            DraftId = 2,
+                            Name = "Балка5",
+                            OppositeCount = 0L,
+                            StraightCount = 2L
+                        },
+                        new
+                        {
+                            Code = "М3",
+                            DraftId = 2,
+                            Name = "Балка6",
+                            OppositeCount = 0L,
+                            StraightCount = 2L
+                        });
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.Material", b =>
@@ -279,6 +388,33 @@ namespace norming_planing_wpf_core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Materials");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Балка 35Ш1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "У 140х90х10"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "-12х240"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "-10х249"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "-30х330"
+                        });
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.NormingMap", b =>
@@ -360,6 +496,18 @@ namespace norming_planing_wpf_core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SteelGrades");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "С345"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "C35E "
+                        });
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.TaskParticipation", b =>
@@ -471,15 +619,11 @@ namespace norming_planing_wpf_core.Migrations
                 {
                     b.HasOne("norming_planing_wpf_core.Material", "Material")
                         .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaterialId");
 
                     b.HasOne("norming_planing_wpf_core.SteelGrade", "SteelGrade")
                         .WithMany()
-                        .HasForeignKey("SteelGradeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SteelGradeId");
 
                     b.HasOne("norming_planing_wpf_core.Mark", "Mark")
                         .WithMany("Details")

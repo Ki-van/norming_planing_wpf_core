@@ -201,7 +201,11 @@ namespace norming_planing_wpf_core.Migrations
                 columns: table => new
                 {
                     Code = table.Column<string>(type: "text", nullable: false),
-                    DraftId = table.Column<int>(type: "integer", nullable: false)
+                    DraftId = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    StraightCount = table.Column<long>(type: "bigint", nullable: false),
+                    OppositeCount = table.Column<long>(type: "bigint", nullable: false),
+                    TotalCount = table.Column<long>(type: "bigint", nullable: false, computedColumnSql: "\"StraightCount\" + \"OppositeCount\"", stored: true)
                 },
                 constraints: table =>
                 {
@@ -222,15 +226,15 @@ namespace norming_planing_wpf_core.Migrations
                     MarkCode = table.Column<string>(type: "text", nullable: false),
                     MarkDraftId = table.Column<int>(type: "integer", nullable: false),
                     StraightCount = table.Column<long>(type: "bigint", nullable: false),
-                    OppositeCount = table.Column<long>(type: "bigint", nullable: false),
+                    OppositeCount = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "0"),
                     TotalCount = table.Column<long>(type: "bigint", nullable: false, computedColumnSql: "\"StraightCount\" + \"OppositeCount\"", stored: true),
                     Weight = table.Column<double>(type: "double precision", nullable: false),
                     TotalWeight = table.Column<double>(type: "double precision", nullable: false, computedColumnSql: "(\"StraightCount\" + \"OppositeCount\") * \"Weight\"", stored: true),
                     MainLenght = table.Column<double>(type: "double precision", nullable: true),
-                    HolesCount = table.Column<int>(type: "integer", nullable: false),
-                    HolesDiamtr = table.Column<int>(type: "integer", nullable: false),
-                    MaterialId = table.Column<int>(type: "integer", nullable: false),
-                    SteelGradeId = table.Column<int>(type: "integer", nullable: false)
+                    HolesCount = table.Column<int>(type: "integer", nullable: true),
+                    HolesDiamtr = table.Column<int>(type: "integer", nullable: true),
+                    MaterialId = table.Column<int>(type: "integer", nullable: true),
+                    SteelGradeId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -245,14 +249,12 @@ namespace norming_planing_wpf_core.Migrations
                         name: "FK_Details_Materials_MaterialId",
                         column: x => x.MaterialId,
                         principalTable: "Materials",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Details_SteelGrades_SteelGradeId",
                         column: x => x.SteelGradeId,
                         principalTable: "SteelGrades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -360,18 +362,63 @@ namespace norming_planing_wpf_core.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Materials",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Балка 35Ш1" },
+                    { 2, "У 140х90х10" },
+                    { 3, "-12х240" },
+                    { 4, "-10х249" },
+                    { 5, "-30х330" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SteelGrades",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "С345" },
+                    { 2, "C35E " }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Drafts",
                 columns: new[] { "Id", "CustomerId", "Deadline", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc), "Свинокомлекс" },
-                    { 2, 2, new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc), "РГС" }
+                    { 1, 1, new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6853), "Свинокомлекс" },
+                    { 2, 2, new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6856), "РГС" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Drafts",
                 columns: new[] { "Id", "CustomerId", "Deadline", "Name", "Status" },
-                values: new object[] { 3, 3, new DateTime(1, 1, 1, 0, 1, 40, 0, DateTimeKind.Utc), "Проект 3", DraftStatus.Planning });
+                values: new object[] { 3, 3, new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6857), "Проект 3", DraftStatus.Planning });
+
+            migrationBuilder.InsertData(
+                table: "Marks",
+                columns: new[] { "Code", "DraftId", "Name", "OppositeCount", "StraightCount" },
+                values: new object[,]
+                {
+                    { "М1", 1, "Балка1", 0L, 2L },
+                    { "М1", 2, "Балка4", 0L, 2L },
+                    { "М2", 1, "Балка2", 0L, 2L },
+                    { "М2", 2, "Балка5", 0L, 2L },
+                    { "М3", 1, "Балка3", 0L, 2L },
+                    { "М3", 2, "Балка6", 0L, 2L }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Details",
+                columns: new[] { "Code", "MarkCode", "MarkDraftId", "HolesCount", "HolesDiamtr", "MainLenght", "MaterialId", "SteelGradeId", "StraightCount", "Weight" },
+                values: new object[,]
+                {
+                    { "Деталь 1", "М1", 1, null, null, null, 1, 1, 2L, 20.0 },
+                    { "Деталь 1", "М2", 1, null, null, null, 2, 1, 2L, 20.0 },
+                    { "Деталь 2", "М1", 1, null, null, null, 1, 1, 2L, 20.0 },
+                    { "Деталь 2", "М2", 1, null, null, null, 2, 1, 2L, 20.0 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Details_MarkCode_MarkDraftId",

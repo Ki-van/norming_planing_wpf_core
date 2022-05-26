@@ -56,10 +56,35 @@ namespace norming_planing_wpf_core
                 new { Id = 2, Name = "Заказчик2"},
                 new { Id = 3, Name = "Заказчик3"}
                );
+            modelBuilder.Entity<Material>().HasData(
+                new { Id = 1, Name = "Балка 35Ш1" },
+                new { Id = 2, Name = "У 140х90х10" },
+                new { Id = 3, Name = "-12х240" },
+                new { Id = 4, Name = "-10х249" },
+                new { Id = 5, Name = "-30х330" }
+                );
+            modelBuilder.Entity<SteelGrade>().HasData(
+                new { Id = 1, Name = "С345" },
+                new { Id = 2, Name = "C35E " }
+                );
             modelBuilder.Entity<Draft>().HasData(
-                new { Id = 1, Name = "Свинокомлекс", Deadline = new DateTime(1000000000, DateTimeKind.Utc), CustomerId = 1},
-                new { Id = 2, Name = "РГС", Deadline = new DateTime(1000000000, DateTimeKind.Utc), CustomerId = 2},
-                new { Id = 3, Name = "Проект 3", Deadline = new DateTime(1000000000, DateTimeKind.Utc), CustomerId = 3, Status = DraftStatus.Planning}
+                new { Id = 1, Name = "Свинокомлекс", Deadline = DateTime.UtcNow, CustomerId = 1},
+                new { Id = 2, Name = "РГС", Deadline = DateTime.UtcNow, CustomerId = 2},
+                new { Id = 3, Name = "Проект 3", Deadline = DateTime.UtcNow, CustomerId = 3, Status = DraftStatus.Planning}
+                );
+            modelBuilder.Entity<Mark>().HasData(
+                new {Code = "М1", DraftId = 1, Name = "Балка1", StraightCount = (uint)2, OppositeCount = (uint)0},
+                new {Code = "М2", DraftId = 1, Name = "Балка2", StraightCount = (uint)2, OppositeCount = (uint)0},
+                new {Code = "М3", DraftId = 1, Name = "Балка3", StraightCount = (uint)2, OppositeCount = (uint)0},
+                new {Code = "М1", DraftId = 2, Name = "Балка4", StraightCount = (uint)2, OppositeCount = (uint)0},
+                new {Code = "М2", DraftId = 2, Name = "Балка5", StraightCount = (uint)2, OppositeCount = (uint)0},
+                new {Code = "М3", DraftId = 2, Name = "Балка6", StraightCount = (uint)2, OppositeCount = (uint)0 }
+                );
+            modelBuilder.Entity<Detail>().HasData(
+                new { Code = "Деталь 1", StraightCount = (uint)2,  Weight = (double)20, MarkCode = "М1", MarkDraftId = 1, SteelGradeId = 1, MaterialId = 1 },
+                new { Code = "Деталь 2", StraightCount = (uint)2, Weight = (double)20, MarkCode = "М1", MarkDraftId = 1 , SteelGradeId = 1, MaterialId = 1},
+                new { Code = "Деталь 1", StraightCount = (uint)2, Weight = (double)20, MarkCode = "М2", MarkDraftId = 1 , SteelGradeId = 1, MaterialId = 2},
+                new { Code = "Деталь 2", StraightCount = (uint)2, Weight = (double)20, MarkCode = "М2", MarkDraftId = 1 , SteelGradeId = 1, MaterialId = 2}
                 );
         }
     }

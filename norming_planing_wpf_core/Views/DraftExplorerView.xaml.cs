@@ -15,13 +15,14 @@ using System.Windows.Shapes;
 namespace norming_planing_wpf_core
 {
     /// <summary>
-    /// Interaction logic for ApplicationView.xaml
+    /// Interaction logic for DraftExplorerView.xaml
     /// </summary>
-    public partial class ApplicationView : Window
+    public partial class DraftExplorerView : Window
     {
-        public ApplicationView()
+        public DraftExplorerView(Draft? draft)
         {
             InitializeComponent();
+            this.DataContext = new DraftExplorerViewModel(draft);
         }
     }
 }

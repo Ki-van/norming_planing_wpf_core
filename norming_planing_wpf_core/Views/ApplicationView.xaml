@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:norming_planing_wpf_core"
         mc:Ignorable="d"
         Title="ApplicationView" Height="450" Width="800">
+    <Window.DataContext>
+        <local:ApplicationViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:HomeViewModel}">
             <local:HomeView />
@@ -17,11 +20,10 @@
             <local:PlanningView/>
         </DataTemplate>
     </Window.Resources>
-
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл">
-                <MenuItem Header="Новый проект" ></MenuItem>
+                <MenuItem Header="Новый проект" Command="{Binding NewDraftCommand}"/>
                 <Separator />
                 <MenuItem Header="Выход" ></MenuItem>
             </MenuItem>

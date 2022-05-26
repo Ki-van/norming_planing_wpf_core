@@ -18,8 +18,8 @@ namespace norming_planing_wpf_core
             base.OnStartup(e);
 
             ApplicationView app = new ApplicationView();
-            ApplicationViewModel context = new ApplicationViewModel();
-            app.DataContext = context;
+           /* ApplicationViewModel context = new ApplicationViewModel();
+            app.DataContext = context;*/
             app.Show();
         }
     }

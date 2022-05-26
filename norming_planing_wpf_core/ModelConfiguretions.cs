@@ -16,6 +16,8 @@ namespace norming_planing_wpf_core
         public void Configure(EntityTypeBuilder<Mark> builder)
         {
             builder.HasKey(u => new {u.Code, u.DraftId});
+            builder.Property(d => d.TotalCount)
+                .HasComputedColumnSql(@"""StraightCount"" + ""OppositeCount""", stored: true);
         }
     }
     
@@ -24,6 +26,7 @@ namespace norming_planing_wpf_core
         public void Configure(EntityTypeBuilder<Detail> builder)
         {
             builder.HasKey(u => new {u.Code, u.MarkCode, u.MarkDraftId});
+            builder.Property(d => d.OppositeCount).HasDefaultValueSql("0");
             builder.HasOne(d => d.Mark)
                 .WithMany(m => m.Details)
                 .HasForeignKey(d => new { d.MarkCode, d.MarkDraftId });
