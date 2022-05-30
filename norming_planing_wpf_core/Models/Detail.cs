@@ -8,6 +8,7 @@ namespace norming_planing_wpf_core
 {
     public class Detail
     {
+        public Detail() { }
         public string Code { get; set; }
         public uint StraightCount { get; set; } = 1;
         public uint OppositeCount { get; set; } = 0;
@@ -17,7 +18,7 @@ namespace norming_planing_wpf_core
         public double? MainLenght { get; set; }
 
         [MarkComponentParam("Количество отверстий")]
-        public int? HolesCount { get; set; }
+        public int? HolesCount { get; set; } = 0;
 
         [MarkComponentParam("Диаметр отверстий")]
         public int? HolesDiamtr { get; set; }
@@ -25,14 +26,10 @@ namespace norming_planing_wpf_core
         public string MarkCode { get; set; }
         public int MarkDraftId { get; set; }
         public Mark Mark { get; set; }
+        public int? MaterialId { get; set; }
         public Material? Material { get; set; }
+        public int? SteelGradeId { get; set; }
         public SteelGrade? SteelGrade { get; set; }
-    }
-
-    public class Material
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
     }
     public class SteelGrade
     {

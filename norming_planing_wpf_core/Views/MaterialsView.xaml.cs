@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace norming_planing_wpf_core
 {
     /// <summary>
-    /// Interaction logic for MarkExploreView.xaml
+    /// Interaction logic for MaterialsView.xaml
     /// </summary>
-    public partial class MarkExploreView : UserControl
+    public partial class MaterialsView : UserControl
     {
-        public MarkExploreView()
+        public MaterialsView()
         {
             InitializeComponent();
         }

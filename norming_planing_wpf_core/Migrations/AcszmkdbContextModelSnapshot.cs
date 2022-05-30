@@ -213,21 +213,21 @@ namespace norming_planing_wpf_core.Migrations
                         {
                             Id = 1,
                             CustomerId = 1,
-                            Deadline = new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6853),
+                            Deadline = new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4284),
                             Name = "Свинокомлекс"
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
-                            Deadline = new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6856),
+                            Deadline = new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4288),
                             Name = "РГС"
                         },
                         new
                         {
                             Id = 3,
                             CustomerId = 3,
-                            Deadline = new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6857),
+                            Deadline = new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4289),
                             Name = "Проект 3",
                             Status = DraftStatus.Planning
                         });
@@ -383,7 +383,16 @@ namespace norming_planing_wpf_core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<JsonDocument>("Scalars")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TypeId");
 
                     b.ToTable("Materials");
 
@@ -391,27 +400,85 @@ namespace norming_planing_wpf_core.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Балка 35Ш1"
+                            Name = "Балка 35Ш1",
+                            Scalars = System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            TypeId = 3
                         },
                         new
                         {
                             Id = 2,
-                            Name = "У 140х90х10"
+                            Name = "У 140х90х10",
+                            Scalars = System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            TypeId = 4
                         },
                         new
                         {
                             Id = 3,
-                            Name = "-12х240"
+                            Name = "-12х240",
+                            Scalars = System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            TypeId = 1
                         },
                         new
                         {
                             Id = 4,
-                            Name = "-10х249"
+                            Name = "-10х249",
+                            Scalars = System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            TypeId = 1
                         },
                         new
                         {
                             Id = 5,
-                            Name = "-30х330"
+                            Name = "-30х330",
+                            Scalars = System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            TypeId = 1
+                        });
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.MaterialType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<JsonDocument>("Structure")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MaterialTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Лист",
+                            Structure = System.Text.Json.JsonDocument.Parse("{\"Сторона А\":{\"var\":\"a\"}, \"Сторона Б\":{\"var\":\"b\"}, \"Толщина\":{\"var\":\"c\"}, \"Площадь\":{\"func\":\"a*b\", \"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions())
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Круг",
+                            Structure = System.Text.Json.JsonDocument.Parse("{\"Диаметр наружный\":{\"var\":\"d\"}, \"Площадь сечения\":{\"func\":\"pi*(d/2)^2\",\"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions())
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Балка",
+                            Structure = System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions())
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Уголок",
+                            Structure = System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions())
                         });
                 });
 
@@ -669,6 +736,17 @@ namespace norming_planing_wpf_core.Migrations
                     b.Navigation("Draft");
                 });
 
+            modelBuilder.Entity("norming_planing_wpf_core.Material", b =>
+                {
+                    b.HasOne("norming_planing_wpf_core.MaterialType", "Type")
+                        .WithMany("Materials")
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Type");
+                });
+
             modelBuilder.Entity("norming_planing_wpf_core.NormingMap", b =>
                 {
                     b.HasOne("norming_planing_wpf_core.Instrument", "Instrument")
@@ -757,6 +835,11 @@ namespace norming_planing_wpf_core.Migrations
                     b.Navigation("Details");
 
                     b.Navigation("TechProcesses");
+                });
+
+            modelBuilder.Entity("norming_planing_wpf_core.MaterialType", b =>
+                {
+                    b.Navigation("Materials");
                 });
 
             modelBuilder.Entity("norming_planing_wpf_core.ShiftTask", b =>

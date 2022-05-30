@@ -19,6 +19,9 @@
         <DataTemplate DataType="{x:Type local:PlanningViewModel}">
             <local:PlanningView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type local:CatalogsViewModel}">
+            <local:CatalogsView/>
+        </DataTemplate>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">

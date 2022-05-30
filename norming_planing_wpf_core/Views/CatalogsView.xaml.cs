@@ -10,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace norming_planing_wpf_core
 {
     /// <summary>
-    /// Interaction logic for DraftExplorerView.xaml
+    /// Interaction logic for CatalogsView.xaml
     /// </summary>
-    public partial class DraftExplorerView : Window
+    public partial class CatalogsView : UserControl
     {
-        public DraftExplorerView(Draft? draft)
+        public CatalogsView()
         {
             InitializeComponent();
-            this.RootLayout.DataContext = new DraftExplorerViewModel(draft);
         }
     }
 }

@@ -57,16 +57,17 @@ namespace norming_planing_wpf_core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Materials",
+                name: "MaterialTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    Structure = table.Column<JsonDocument>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Materials", x => x.Id);
+                    table.PrimaryKey("PK_MaterialTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,6 +136,27 @@ namespace norming_planing_wpf_core.Migrations
                         name: "FK_Employees_EmployeePositions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "EmployeePositions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Scalars = table.Column<JsonDocument>(type: "jsonb", nullable: false),
+                    TypeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Materials_MaterialTypes_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "MaterialTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -362,15 +384,14 @@ namespace norming_planing_wpf_core.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Materials",
-                columns: new[] { "Id", "Name" },
+                table: "MaterialTypes",
+                columns: new[] { "Id", "Name", "Structure" },
                 values: new object[,]
                 {
-                    { 1, "Балка 35Ш1" },
-                    { 2, "У 140х90х10" },
-                    { 3, "-12х240" },
-                    { 4, "-10х249" },
-                    { 5, "-30х330" }
+                    { 1, "Лист", System.Text.Json.JsonDocument.Parse("{\"Сторона А\":{\"var\":\"a\"}, \"Сторона Б\":{\"var\":\"b\"}, \"Толщина\":{\"var\":\"c\"}, \"Площадь\":{\"func\":\"a*b\", \"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions()) },
+                    { 2, "Круг", System.Text.Json.JsonDocument.Parse("{\"Диаметр наружный\":{\"var\":\"d\"}, \"Площадь сечения\":{\"func\":\"pi*(d/2)^2\",\"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions()) },
+                    { 3, "Балка", System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions()) },
+                    { 4, "Уголок", System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions()) }
                 });
 
             migrationBuilder.InsertData(
@@ -387,14 +408,26 @@ namespace norming_planing_wpf_core.Migrations
                 columns: new[] { "Id", "CustomerId", "Deadline", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6853), "Свинокомлекс" },
-                    { 2, 2, new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6856), "РГС" }
+                    { 1, 1, new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4284), "Свинокомлекс" },
+                    { 2, 2, new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4288), "РГС" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Drafts",
                 columns: new[] { "Id", "CustomerId", "Deadline", "Name", "Status" },
-                values: new object[] { 3, 3, new DateTime(2022, 5, 26, 22, 49, 34, 983, DateTimeKind.Utc).AddTicks(6857), "Проект 3", DraftStatus.Planning });
+                values: new object[] { 3, 3, new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4289), "Проект 3", DraftStatus.Planning });
+
+            migrationBuilder.InsertData(
+                table: "Materials",
+                columns: new[] { "Id", "Name", "Scalars", "TypeId" },
+                values: new object[,]
+                {
+                    { 1, "Балка 35Ш1", System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 3 },
+                    { 2, "У 140х90х10", System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 4 },
+                    { 3, "-12х240", System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 1 },
+                    { 4, "-10х249", System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 1 },
+                    { 5, "-30х330", System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 1 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Marks",
@@ -454,6 +487,11 @@ namespace norming_planing_wpf_core.Migrations
                 name: "IX_Marks_DraftId",
                 table: "Marks",
                 column: "DraftId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Materials_TypeId",
+                table: "Materials",
+                column: "TypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NormingMaps_InstrumentId",
@@ -524,6 +562,9 @@ namespace norming_planing_wpf_core.Migrations
 
             migrationBuilder.DropTable(
                 name: "ShiftTasks");
+
+            migrationBuilder.DropTable(
+                name: "MaterialTypes");
 
             migrationBuilder.DropTable(
                 name: "EmployeePositions");

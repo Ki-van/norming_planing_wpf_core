@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 namespace norming_planing_wpf_core
@@ -22,6 +23,8 @@ namespace norming_planing_wpf_core
         public DbSet<EmployeePosition> EmployeePositions { get; set; }
         public DbSet<ShiftTask> ShiftTasks { get; set; }
         public DbSet<Material> Materials { get; set; }
+        public DbSet<MaterialType> MaterialTypes { get; set; }
+
         public DbSet<SteelGrade> SteelGrades { get; set; }
 
 
@@ -56,12 +59,18 @@ namespace norming_planing_wpf_core
                 new { Id = 2, Name = "Заказчик2"},
                 new { Id = 3, Name = "Заказчик3"}
                );
+            modelBuilder.Entity<MaterialType>().HasData(
+                new {Id = 1, Name = "Лист", Structure = JsonDocument.Parse(@"{""Сторона А"":{""var"":""a""}, ""Сторона Б"":{""var"":""b""}, ""Толщина"":{""var"":""c""}, ""Площадь"":{""func"":""a*b"", ""var"":""S""}}") },
+                new {Id = 2, Name = "Круг", Structure = JsonDocument.Parse(@"{""Диаметр наружный"":{""var"":""d""}, ""Площадь сечения"":{""func"":""pi*(d/2)^2"",""var"":""S""}}") },
+                new {Id = 3, Name = "Балка", Structure = JsonDocument.Parse(@"{""Высота"":{""var"":""l""},""Ширина"":{""var"":""w""},""Толщина"":{""var"":""t""}}") },
+                new {Id = 4, Name = "Уголок", Structure = JsonDocument.Parse(@"{""Высота"":{""var"":""l""},""Ширина"":{""var"":""w""},""Толщина"":{""var"":""t""}}") }
+                );
             modelBuilder.Entity<Material>().HasData(
-                new { Id = 1, Name = "Балка 35Ш1" },
-                new { Id = 2, Name = "У 140х90х10" },
-                new { Id = 3, Name = "-12х240" },
-                new { Id = 4, Name = "-10х249" },
-                new { Id = 5, Name = "-30х330" }
+                new { Id = 1, Name = "Балка 35Ш1", TypeId= 3, Scalars = JsonDocument.Parse(@"{""l"":3, ""w"": 2, ""t"": 0.001}")},
+                new { Id = 2, Name = "У 140х90х10", TypeId = 4, Scalars = JsonDocument.Parse(@"{""l"":3, ""w"": 2, ""t"": 0.001}") },
+                new { Id = 3, Name = "-12х240", TypeId = 1, Scalars = JsonDocument.Parse(@"{""a"":3, ""b"": 2, ""c"": 0.001}") },
+                new { Id = 4, Name = "-10х249", TypeId = 1, Scalars = JsonDocument.Parse(@"{""a"":3, ""b"": 2, ""c"": 0.001}") },
+                new { Id = 5, Name = "-30х330", TypeId = 1, Scalars = JsonDocument.Parse(@"{""a"":3, ""b"": 2, ""c"": 0.001}") }
                 );
             modelBuilder.Entity<SteelGrade>().HasData(
                 new { Id = 1, Name = "С345" },

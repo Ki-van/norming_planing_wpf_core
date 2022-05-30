@@ -6,65 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.ComponentModel;
 
 namespace norming_planing_wpf_core
 {
     public class DraftExplorerViewModel : ObservableObject, IDisposable
     {
-        private Control _currentExplorerView;
-        private object selectedItemTreeViewSs;
         private AcszmkdbContext db;
-        private DetailExploreView detailExploreView;
-        private MarkExploreView markExploreView;
         public Draft ExploredDraft { get; set; } = new Draft();
+        public BindingList<Mark> Marks { get; set; }
+        public ObservableCollection<Material> Materials { get; set; }
+        public ObservableCollection<SteelGrade> SteelGrades { get; set; }
         public ObservableCollection<Customer> Customers { get; set; }
-   
         public Customer SelectedCustomer { get; set; }
         public string Title { get; set; } = "Обзор проекта";
-        public object SelectedItemTreeViewSs
-        {
-            get
-            {
-                return selectedItemTreeViewSs;
-            }
-            set
-            {
-                selectedItemTreeViewSs = value;
-                OnPropertyChanged(nameof(SelectedItemTreeViewSs));
-                ChangeExplorerCommand.Execute(value);
-            }
-        }
-        public Control CurrentExplorerView
-        {
-            get
-            {
-                return _currentExplorerView;
-            }
-            set
-            {
-                if (_currentExplorerView != value)
-                {
-                    _currentExplorerView = value;
-                    OnPropertyChanged("CurrentExplorerView");
-                }
-            }
-        }
-        #region Commands
-        private ICommand? _changeExplorerCommand;
-        public ICommand ChangeExplorerCommand
-        {
-            get
-            {
-                if (_changeExplorerCommand == null)
-                {
-                    _changeExplorerCommand = new RelayCommand(
-                        p => ChangeExplorerView(p));
-                }
-
-                return _changeExplorerCommand;
-            }
-        }
-        #endregion
+       
         public DraftExplorerViewModel()
         {
         }
@@ -79,49 +35,33 @@ namespace norming_planing_wpf_core
                 Title = "Создание проекта";
             else
             {
-                db.Drafts.Where(d => d.Id == exploredDraft.Id)
-                    .Include(d => d.Marks)
-                    .ThenInclude(m => m.Details).Load();
-                ExploredDraft = db.Drafts.Local.Where(d => d.Id == exploredDraft.Id).First();
+                ExploredDraft = exploredDraft;
+                db.Marks.Where(m => m.DraftId == exploredDraft.Id).Include(m => m.Details).Load();
+                db.Materials.Load();
+                db.SteelGrades.Load();
+                Marks = db.Marks.Local.ToBindingList();
+                Materials = db.Materials.Local.ToObservableCollection();
+                SteelGrades = db.SteelGrades.Local.ToObservableCollection();
+
                 SelectedCustomer = Customers.Where(c => c.Id == exploredDraft.CustomerId).First();
             }
         }
-
-        #region Methods
-        public void ChangeExplorerView(object p)
+        #region Commands
+        private ICommand _saveCommand;
+        public ICommand SaveCommand
         {
-            if (p is Detail)
+            get => _saveCommand ??= new RelayCommand(p =>
+                                 {
+                                     db.Update<Draft>(ExploredDraft);
+                                     db.SaveChanges();
+                                 });
+            set
             {
-                var detail = (Detail)p;
-                if (detailExploreView == null)
-                {
-                    detailExploreView = new DetailExploreView();
-                    db.Materials.Load();
-                    db.SteelGrades.Load();
-                    detailExploreView.MaterialComboBox.ItemsSource = db.Materials.Local.ToList();
-                    detailExploreView.SteelGradeComboBox.ItemsSource = db.SteelGrades.Local.ToList();
-                }
-
-                var query = db.Materials.Local.Where(m => m.Id == detail.Material?.Id);
-                detailExploreView.MaterialComboBox.SelectedItem = query.Any() ? query.First(): null;
-
-                query = db.Materials.Local.Where(m => m.Id == detail.SteelGrade?.Id);
-                detailExploreView.SteelGradeComboBox.SelectedItem = query.Any() ? query.First() : null;
-
-                detailExploreView.DataContext = detail;
-                CurrentExplorerView = detailExploreView;
+                _saveCommand = value;
             }
-            else if (p is Mark)
-            {
-                var mark = (Mark)p;
-                if(markExploreView == null)
-                    markExploreView = new();
-                markExploreView.DataContext = mark;
-                CurrentExplorerView = markExploreView;
-            }
-                
-            
         }
+        #endregion
+        #region Methods
         public void Dispose()
         {
             db.Dispose();

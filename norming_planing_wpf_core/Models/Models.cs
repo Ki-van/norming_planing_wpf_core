@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 
 namespace norming_planing_wpf_core
@@ -14,8 +15,19 @@ namespace norming_planing_wpf_core
         public uint TotalCount { get; set; }
         public int DraftId { get; set; }
         public Draft Draft { get; set; }
-        public ICollection<Detail> Details { get; set; }
+        public ICollection<Detail> Details { get; set; } = new ObservableCollection<Detail>();
         public ICollection<TP>? TechProcesses { get; set; }
+
+        public string GetDetailsPrefix()
+        {
+            string prefix = string.Empty;
+            if (Details != null && Details.Count > 0)
+            {
+                string lastCode = ((List<Detail>)Details)[Details.Count - 1].Code;
+                
+            }
+            return prefix;
+        }
     }
    
     public class TP

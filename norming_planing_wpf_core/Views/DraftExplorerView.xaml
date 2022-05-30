@@ -6,12 +6,15 @@
         xmlns:local="clr-namespace:norming_planing_wpf_core"
         xmlns:extensions="clr-namespace:norming_planing_wpf_core.Extensions"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        mc:Ignorable="d"
-        Title="{Binding Title}" Height="449" Width="1000">
+        mc:Ignorable="d" Height="574" Width="1174" Title="Обзор проекта">
     <Window.Resources>
         <Style TargetType="Button" x:Key="SquareButton">
             <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
             <Setter Property="Margin" Value="5, 0, 0, 5" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="LightGray" />
+            <Setter Property="AlternatingRowBackground" Value="White" />
         </Style>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14" />
@@ -23,18 +26,23 @@
             <Setter Property="Width" Value="40" />
             <Setter Property="Margin" Value="5" />
         </Style>
+
+        <CollectionViewSource x:Key="materialsViewSource" Source="{Binding Materials}" />
+
     </Window.Resources>
-    <Grid Margin="5">
+    <Grid Margin="5" x:Name="RootLayout">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.38*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Проект" HorizontalAlignment="Center"/>
         <StackPanel Margin="5" Grid.Row="1">
             <TextBlock Text="Название" />
             <TextBox Text="{Binding ExploredDraft.Name, UpdateSourceTrigger=PropertyChanged}" />
@@ -44,62 +52,104 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <ComboBox Name="customersComboBox" ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                <ComboBox
+                    Name="customersComboBox" 
+                    ItemsSource="{Binding Customers}"
+                    SelectedItem="{Binding ExploredDraft.Customer, Mode=TwoWay}"
+                    SelectedValue="{Binding ExploredDraft.CustomerId, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedValuePath="Id"
+                    DisplayMemberPath="Name"
+                    />
                 <Button Grid.Column="1" Margin="0" Style = "{StaticResource SquareButton}">
                     +
                 </Button>
             </Grid>
             <TextBlock Text="Срок сдачи проекта" />
-            <DatePicker SelectedDate="{Binding ExploredDraft.Deadline}"  />
+            <DatePicker SelectedDate="{Binding ExploredDraft.Deadline, Mode=TwoWay}" SelectedDateFormat="Long"  />
         </StackPanel>
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Структура металлоконструкции" HorizontalAlignment="Center"/>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <Button Style="{StaticResource SquareButton}">+</Button>
-                <Button Style="{StaticResource SquareButton}">-</Button>
-            </StackPanel>
-        </Grid>
-        <TreeView
-                Grid.Column="1"
-                Grid.Row="1"
-                ItemsSource="{Binding ExploredDraft.Marks}" 
-                FontSize="14"
-                extensions:TreeViewSelectedItemExBehavior.SelectedItemEx="{Binding SelectedItemTreeViewSs}"
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Отправочные маки" HorizontalAlignment="Center"/>
+        <DataGrid
+            x:Name="marksDataGrid"
+            Grid.Column="1"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            ItemsSource="{Binding Path=Marks}"
+            RowDetailsVisibilityMode="VisibleWhenSelected"
             >
-            <TreeView.ItemTemplate>
-
-                <HierarchicalDataTemplate ItemsSource="{Binding Details}" >
-                    <TextBlock >
-                        <TextBlock.Text>
-                            <MultiBinding  StringFormat="{}{0} ({1})">
-                                <Binding Path="Name"/>
-                                <Binding Path="Code"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                    <HierarchicalDataTemplate.ItemTemplate >
-                        <DataTemplate >
-                            <TextBlock Text="{Binding Code}" />
-                        </DataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Code}" Header="Код" />
+                <DataGridTextColumn Binding="{Binding Path=Name}" Header="Наименование"/>
+                <DataGridTextColumn Binding="{Binding Path=StraightCount}" Header="Т" Width="SizeToHeader" />
+                <DataGridTextColumn Binding="{Binding Path=OppositeCount}" Header="Н" Width="SizeToHeader"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <GridSplitter Grid.Column="2" ShowsPreview="False" Width="5" Grid.RowSpan="2"
 		HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-        <GroupBox Grid.Column="3" Grid.Row="1">
-            <ContentControl  Content="{Binding CurrentExplorerView}"/>
-        </GroupBox>
+        <TextBlock Grid.Row="0" Grid.Column="3" Text="Детали" HorizontalAlignment="Center"/>
+        <DataGrid x:Name="detailsDataGrid" 
+            Grid.Column="3" 
+            Grid.Row="1"
+            AutoGenerateColumns="False" 
+            ItemsSource="{Binding SelectedItem.Details, ElementName=marksDataGrid}"
+            RowDetailsVisibilityMode="VisibleWhenSelected"
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Code, Mode=TwoWay}" Header="Код" />
+                <DataGridTemplateColumn Header="Металлопрофиль">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox 
+                                    IsEditable="True" 
+                                    ItemsSource="{Binding DataContext.Materials, ElementName=RootLayout}"
+                                    DisplayMemberPath="Name"
+                                    SelectedItem="{Binding Material, Mode=TwoWay}"
+                                    SelectedValue="{Binding MaterialId, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedValuePath="Id"
+                                    />
+                                <Button Style="{StaticResource SquareButton}" Grid.Column="1" >+</Button>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding Path=MainLenght, Mode=TwoWay}" Header="Длина,мм" Width="SizeToHeader"/>
+                <DataGridTextColumn Binding="{Binding Path=StraightCount}" Header="Т" Width="SizeToHeader" />
+                <DataGridTextColumn Binding="{Binding Path=OppositeCount}" Header="Н" Width="SizeToHeader"/>
+                <DataGridTextColumn Binding="{Binding Path=Weight}" Header="Вес, кг" Width="SizeToHeader"/>
+                <DataGridTemplateColumn Header="Марка стали">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox 
+                                    IsEditable="True" 
+                                    ItemsSource="{Binding DataContext.SteelGrades, ElementName=RootLayout}"
+                                    DisplayMemberPath="Name"
+                                    SelectedItem="{Binding SteelGrade, Mode=TwoWay}"
+                                    SelectedValue="{Binding SteelGradeId,  UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedValuePath="Id"
+                                   />
+                                <Button Style="{StaticResource SquareButton}" Grid.Column="1" >+</Button>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Ок"  Height="Auto" Command="{Binding SaveCommand}"/>
+            <Button Grid.Column="1" Width="Auto" Height="Auto" Margin="5,5,0,5" >Отмена</Button>
+        </Grid>
     </Grid>
 </Window>

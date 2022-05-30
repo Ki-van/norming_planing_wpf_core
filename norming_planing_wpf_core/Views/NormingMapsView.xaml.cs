@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace norming_planing_wpf_core
 {
     /// <summary>
-    /// Interaction logic for DetailExploreView.xaml
+    /// Interaction logic for NormingMapsView.xaml
     /// </summary>
-    public partial class DetailExploreView : UserControl
+    public partial class NormingMapsView : UserControl
     {
-        public DetailExploreView()
+        public NormingMapsView()
         {
             InitializeComponent();
         }
