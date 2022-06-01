@@ -26,7 +26,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBox HorizontalAlignment="Center">Каталоги</TextBox>
+        <TextBlock HorizontalAlignment="Center">Каталоги</TextBlock>
         <ListBox ItemsSource="{Binding Catalogs}" Grid.Row="1">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
@@ -34,6 +34,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ListBox>
-        <ContentControl Grid.Column="1" Content="{Binding CurrentCatalog}" Grid.Row="1"/>
+        <ContentControl Grid.Column="1" Content="{Binding CurrentCatalog}" Grid.Row="0" Grid.RowSpan="2"/>
     </Grid>
 </UserControl>

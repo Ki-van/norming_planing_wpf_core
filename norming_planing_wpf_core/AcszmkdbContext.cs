@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using System.Collections.ObjectModel;
+
 namespace norming_planing_wpf_core
 {
     public class AcszmkdbContext: DbContext
@@ -60,17 +62,39 @@ namespace norming_planing_wpf_core
                 new { Id = 3, Name = "Заказчик3"}
                );
             modelBuilder.Entity<MaterialType>().HasData(
-                new {Id = 1, Name = "Лист", Structure = JsonDocument.Parse(@"{""Сторона А"":{""var"":""a""}, ""Сторона Б"":{""var"":""b""}, ""Толщина"":{""var"":""c""}, ""Площадь"":{""func"":""a*b"", ""var"":""S""}}") },
-                new {Id = 2, Name = "Круг", Structure = JsonDocument.Parse(@"{""Диаметр наружный"":{""var"":""d""}, ""Площадь сечения"":{""func"":""pi*(d/2)^2"",""var"":""S""}}") },
-                new {Id = 3, Name = "Балка", Structure = JsonDocument.Parse(@"{""Высота"":{""var"":""l""},""Ширина"":{""var"":""w""},""Толщина"":{""var"":""t""}}") },
-                new {Id = 4, Name = "Уголок", Structure = JsonDocument.Parse(@"{""Высота"":{""var"":""l""},""Ширина"":{""var"":""w""},""Толщина"":{""var"":""t""}}") }
+                new {Id = 1, Name = "Лист", Structure = JsonSerializer.SerializeToDocument(
+                    new ObservableCollection<StructureItem> {
+                        new StructureItem("Сторона А", "a"),
+                        new StructureItem("Сторона Б", "b"),
+                        new StructureItem("Толщина", "с"),
+                        new StructureItem("Площадь", "S", "a*b"),
+                    }) },
+                new {Id = 2, Name = "Круг", Structure =
+                JsonSerializer.SerializeToDocument(
+                    new ObservableCollection<StructureItem> {
+                        new StructureItem("Диаметр наружный", "d"),
+                        new StructureItem("Площадь сечения", "S","pi*(d/2)^2" ),
+                    })},
+                new {Id = 3, Name = "Балка", Structure = JsonSerializer.SerializeToDocument(
+                    new ObservableCollection<StructureItem> {
+                        new StructureItem("Высота", "l"), 
+                        new StructureItem("Ширина", "w"), 
+                        new StructureItem("Толщина", "t"), 
+                    } )},
+                new {Id = 4, Name = "Уголок", Structure = JsonSerializer.SerializeToDocument(
+                    new ObservableCollection<StructureItem> {
+                        new StructureItem("Высота", "l"),
+                        new StructureItem("Ширина", "w"),
+                        new StructureItem("Толщина", "t"),
+                    })
+                }
                 );
             modelBuilder.Entity<Material>().HasData(
-                new { Id = 1, Name = "Балка 35Ш1", TypeId= 3, Scalars = JsonDocument.Parse(@"{""l"":3, ""w"": 2, ""t"": 0.001}")},
-                new { Id = 2, Name = "У 140х90х10", TypeId = 4, Scalars = JsonDocument.Parse(@"{""l"":3, ""w"": 2, ""t"": 0.001}") },
-                new { Id = 3, Name = "-12х240", TypeId = 1, Scalars = JsonDocument.Parse(@"{""a"":3, ""b"": 2, ""c"": 0.001}") },
-                new { Id = 4, Name = "-10х249", TypeId = 1, Scalars = JsonDocument.Parse(@"{""a"":3, ""b"": 2, ""c"": 0.001}") },
-                new { Id = 5, Name = "-30х330", TypeId = 1, Scalars = JsonDocument.Parse(@"{""a"":3, ""b"": 2, ""c"": 0.001}") }
+                new { Id = 1, Name = "Балка 35Ш1", TypeId= 3, Scalars = JsonDocument.Parse(@"[{""Var"":""l"",""Val"":3},{""Var"":""w"",""Val"":2},{""Var"":""t"",""Val"":0.001}]") },
+                new { Id = 2, Name = "У 140х90х10", TypeId = 4, Scalars = JsonDocument.Parse(@"[{""Var"":""l"",""Val"":3},{""Var"":""w"",""Val"":2},{""Var"":""t"",""Val"":0.001}]") },
+                new { Id = 3, Name = "-12х240", TypeId = 1, Scalars = JsonDocument.Parse(@"[{""Var"":""a"",""Val"":3},{""Var"":""b"",""Val"":2},{""Var"":""c"",""Val"":0.001},{""Var"":""S"",""Val"":6}]") },
+                new { Id = 4, Name = "-10х249", TypeId = 1, Scalars = JsonDocument.Parse(@"[{""Var"":""a"",""Val"":3},{""Var"":""b"",""Val"":2},{""Var"":""c"",""Val"":0.001},{""Var"":""S"",""Val"":6}]") },
+                new { Id = 5, Name = "-30х330", TypeId = 1, Scalars = JsonDocument.Parse(@"[{""Var"":""a"",""Val"":3},{""Var"":""b"",""Val"":2},{""Var"":""c"",""Val"":0.001},{""Var"":""S"",""Val"":6}]") }
                 );
             modelBuilder.Entity<SteelGrade>().HasData(
                 new { Id = 1, Name = "С345" },

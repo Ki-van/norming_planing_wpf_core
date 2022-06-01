@@ -388,10 +388,10 @@ namespace norming_planing_wpf_core.Migrations
                 columns: new[] { "Id", "Name", "Structure" },
                 values: new object[,]
                 {
-                    { 1, "Лист", System.Text.Json.JsonDocument.Parse("{\"Сторона А\":{\"var\":\"a\"}, \"Сторона Б\":{\"var\":\"b\"}, \"Толщина\":{\"var\":\"c\"}, \"Площадь\":{\"func\":\"a*b\", \"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions()) },
-                    { 2, "Круг", System.Text.Json.JsonDocument.Parse("{\"Диаметр наружный\":{\"var\":\"d\"}, \"Площадь сечения\":{\"func\":\"pi*(d/2)^2\",\"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions()) },
-                    { 3, "Балка", System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions()) },
-                    { 4, "Уголок", System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions()) }
+                    { 1, "Лист", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Name\":\"\\u0421\\u0442\\u043E\\u0440\\u043E\\u043D\\u0430 \\u0410\",\"Func\":null},{\"Var\":\"b\",\"Name\":\"\\u0421\\u0442\\u043E\\u0440\\u043E\\u043D\\u0430 \\u0411\",\"Func\":null},{\"Var\":\"\\u0441\",\"Name\":\"\\u0422\\u043E\\u043B\\u0449\\u0438\\u043D\\u0430\",\"Func\":null},{\"Var\":\"S\",\"Name\":\"\\u041F\\u043B\\u043E\\u0449\\u0430\\u0434\\u044C\",\"Func\":\"a*b\"}]", new System.Text.Json.JsonDocumentOptions()) },
+                    { 2, "Круг", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"d\",\"Name\":\"\\u0414\\u0438\\u0430\\u043C\\u0435\\u0442\\u0440 \\u043D\\u0430\\u0440\\u0443\\u0436\\u043D\\u044B\\u0439\",\"Func\":null},{\"Var\":\"S\",\"Name\":\"\\u041F\\u043B\\u043E\\u0449\\u0430\\u0434\\u044C \\u0441\\u0435\\u0447\\u0435\\u043D\\u0438\\u044F\",\"Func\":\"pi*(d/2)^2\"}]", new System.Text.Json.JsonDocumentOptions()) },
+                    { 3, "Балка", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Name\":\"\\u0412\\u044B\\u0441\\u043E\\u0442\\u0430\",\"Func\":null},{\"Var\":\"w\",\"Name\":\"\\u0428\\u0438\\u0440\\u0438\\u043D\\u0430\",\"Func\":null},{\"Var\":\"t\",\"Name\":\"\\u0422\\u043E\\u043B\\u0449\\u0438\\u043D\\u0430\",\"Func\":null}]", new System.Text.Json.JsonDocumentOptions()) },
+                    { 4, "Уголок", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Name\":\"\\u0412\\u044B\\u0441\\u043E\\u0442\\u0430\",\"Func\":null},{\"Var\":\"w\",\"Name\":\"\\u0428\\u0438\\u0440\\u0438\\u043D\\u0430\",\"Func\":null},{\"Var\":\"t\",\"Name\":\"\\u0422\\u043E\\u043B\\u0449\\u0438\\u043D\\u0430\",\"Func\":null}]", new System.Text.Json.JsonDocumentOptions()) }
                 });
 
             migrationBuilder.InsertData(
@@ -408,25 +408,25 @@ namespace norming_planing_wpf_core.Migrations
                 columns: new[] { "Id", "CustomerId", "Deadline", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4284), "Свинокомлекс" },
-                    { 2, 2, new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4288), "РГС" }
+                    { 1, 1, new DateTime(2022, 6, 1, 17, 36, 1, 869, DateTimeKind.Utc).AddTicks(9985), "Свинокомлекс" },
+                    { 2, 2, new DateTime(2022, 6, 1, 17, 36, 1, 869, DateTimeKind.Utc).AddTicks(9988), "РГС" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Drafts",
                 columns: new[] { "Id", "CustomerId", "Deadline", "Name", "Status" },
-                values: new object[] { 3, 3, new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4289), "Проект 3", DraftStatus.Planning });
+                values: new object[] { 3, 3, new DateTime(2022, 6, 1, 17, 36, 1, 869, DateTimeKind.Utc).AddTicks(9989), "Проект 3", DraftStatus.Planning });
 
             migrationBuilder.InsertData(
                 table: "Materials",
                 columns: new[] { "Id", "Name", "Scalars", "TypeId" },
                 values: new object[,]
                 {
-                    { 1, "Балка 35Ш1", System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 3 },
-                    { 2, "У 140х90х10", System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 4 },
-                    { 3, "-12х240", System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 1 },
-                    { 4, "-10х249", System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 1 },
-                    { 5, "-30х330", System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()), 1 }
+                    { 1, "Балка 35Ш1", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Val\":3},{\"Var\":\"w\",\"Val\":2},{\"Var\":\"t\",\"Val\":0.001}]", new System.Text.Json.JsonDocumentOptions()), 3 },
+                    { 2, "У 140х90х10", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Val\":3},{\"Var\":\"w\",\"Val\":2},{\"Var\":\"t\",\"Val\":0.001}]", new System.Text.Json.JsonDocumentOptions()), 4 },
+                    { 3, "-12х240", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Val\":3},{\"Var\":\"b\",\"Val\":2},{\"Var\":\"c\",\"Val\":0.001},{\"Var\":\"S\",\"Val\":6}]", new System.Text.Json.JsonDocumentOptions()), 1 },
+                    { 4, "-10х249", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Val\":3},{\"Var\":\"b\",\"Val\":2},{\"Var\":\"c\",\"Val\":0.001},{\"Var\":\"S\",\"Val\":6}]", new System.Text.Json.JsonDocumentOptions()), 1 },
+                    { 5, "-30х330", System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Val\":3},{\"Var\":\"b\",\"Val\":2},{\"Var\":\"c\",\"Val\":0.001},{\"Var\":\"S\",\"Val\":6}]", new System.Text.Json.JsonDocumentOptions()), 1 }
                 });
 
             migrationBuilder.InsertData(

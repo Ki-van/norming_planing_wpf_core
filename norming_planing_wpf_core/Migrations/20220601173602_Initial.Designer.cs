@@ -13,7 +13,7 @@ using norming_planing_wpf_core;
 namespace norming_planing_wpf_core.Migrations
 {
     [DbContext(typeof(AcszmkdbContext))]
-    [Migration("20220530175930_Initial")]
+    [Migration("20220601173602_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,21 +215,21 @@ namespace norming_planing_wpf_core.Migrations
                         {
                             Id = 1,
                             CustomerId = 1,
-                            Deadline = new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4284),
+                            Deadline = new DateTime(2022, 6, 1, 17, 36, 1, 869, DateTimeKind.Utc).AddTicks(9985),
                             Name = "Свинокомлекс"
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
-                            Deadline = new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4288),
+                            Deadline = new DateTime(2022, 6, 1, 17, 36, 1, 869, DateTimeKind.Utc).AddTicks(9988),
                             Name = "РГС"
                         },
                         new
                         {
                             Id = 3,
                             CustomerId = 3,
-                            Deadline = new DateTime(2022, 5, 30, 17, 59, 29, 37, DateTimeKind.Utc).AddTicks(4289),
+                            Deadline = new DateTime(2022, 6, 1, 17, 36, 1, 869, DateTimeKind.Utc).AddTicks(9989),
                             Name = "Проект 3",
                             Status = DraftStatus.Planning
                         });
@@ -403,35 +403,35 @@ namespace norming_planing_wpf_core.Migrations
                         {
                             Id = 1,
                             Name = "Балка 35Ш1",
-                            Scalars = System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            Scalars = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Val\":3},{\"Var\":\"w\",\"Val\":2},{\"Var\":\"t\",\"Val\":0.001}]", new System.Text.Json.JsonDocumentOptions()),
                             TypeId = 3
                         },
                         new
                         {
                             Id = 2,
                             Name = "У 140х90х10",
-                            Scalars = System.Text.Json.JsonDocument.Parse("{\"l\":3, \"w\": 2, \"t\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            Scalars = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Val\":3},{\"Var\":\"w\",\"Val\":2},{\"Var\":\"t\",\"Val\":0.001}]", new System.Text.Json.JsonDocumentOptions()),
                             TypeId = 4
                         },
                         new
                         {
                             Id = 3,
                             Name = "-12х240",
-                            Scalars = System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            Scalars = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Val\":3},{\"Var\":\"b\",\"Val\":2},{\"Var\":\"c\",\"Val\":0.001},{\"Var\":\"S\",\"Val\":6}]", new System.Text.Json.JsonDocumentOptions()),
                             TypeId = 1
                         },
                         new
                         {
                             Id = 4,
                             Name = "-10х249",
-                            Scalars = System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            Scalars = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Val\":3},{\"Var\":\"b\",\"Val\":2},{\"Var\":\"c\",\"Val\":0.001},{\"Var\":\"S\",\"Val\":6}]", new System.Text.Json.JsonDocumentOptions()),
                             TypeId = 1
                         },
                         new
                         {
                             Id = 5,
                             Name = "-30х330",
-                            Scalars = System.Text.Json.JsonDocument.Parse("{\"a\":3, \"b\": 2, \"c\": 0.001}", new System.Text.Json.JsonDocumentOptions()),
+                            Scalars = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Val\":3},{\"Var\":\"b\",\"Val\":2},{\"Var\":\"c\",\"Val\":0.001},{\"Var\":\"S\",\"Val\":6}]", new System.Text.Json.JsonDocumentOptions()),
                             TypeId = 1
                         });
                 });
@@ -462,25 +462,25 @@ namespace norming_planing_wpf_core.Migrations
                         {
                             Id = 1,
                             Name = "Лист",
-                            Structure = System.Text.Json.JsonDocument.Parse("{\"Сторона А\":{\"var\":\"a\"}, \"Сторона Б\":{\"var\":\"b\"}, \"Толщина\":{\"var\":\"c\"}, \"Площадь\":{\"func\":\"a*b\", \"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions())
+                            Structure = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"a\",\"Name\":\"\\u0421\\u0442\\u043E\\u0440\\u043E\\u043D\\u0430 \\u0410\",\"Func\":null},{\"Var\":\"b\",\"Name\":\"\\u0421\\u0442\\u043E\\u0440\\u043E\\u043D\\u0430 \\u0411\",\"Func\":null},{\"Var\":\"\\u0441\",\"Name\":\"\\u0422\\u043E\\u043B\\u0449\\u0438\\u043D\\u0430\",\"Func\":null},{\"Var\":\"S\",\"Name\":\"\\u041F\\u043B\\u043E\\u0449\\u0430\\u0434\\u044C\",\"Func\":\"a*b\"}]", new System.Text.Json.JsonDocumentOptions())
                         },
                         new
                         {
                             Id = 2,
                             Name = "Круг",
-                            Structure = System.Text.Json.JsonDocument.Parse("{\"Диаметр наружный\":{\"var\":\"d\"}, \"Площадь сечения\":{\"func\":\"pi*(d/2)^2\",\"var\":\"S\"}}", new System.Text.Json.JsonDocumentOptions())
+                            Structure = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"d\",\"Name\":\"\\u0414\\u0438\\u0430\\u043C\\u0435\\u0442\\u0440 \\u043D\\u0430\\u0440\\u0443\\u0436\\u043D\\u044B\\u0439\",\"Func\":null},{\"Var\":\"S\",\"Name\":\"\\u041F\\u043B\\u043E\\u0449\\u0430\\u0434\\u044C \\u0441\\u0435\\u0447\\u0435\\u043D\\u0438\\u044F\",\"Func\":\"pi*(d/2)^2\"}]", new System.Text.Json.JsonDocumentOptions())
                         },
                         new
                         {
                             Id = 3,
                             Name = "Балка",
-                            Structure = System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions())
+                            Structure = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Name\":\"\\u0412\\u044B\\u0441\\u043E\\u0442\\u0430\",\"Func\":null},{\"Var\":\"w\",\"Name\":\"\\u0428\\u0438\\u0440\\u0438\\u043D\\u0430\",\"Func\":null},{\"Var\":\"t\",\"Name\":\"\\u0422\\u043E\\u043B\\u0449\\u0438\\u043D\\u0430\",\"Func\":null}]", new System.Text.Json.JsonDocumentOptions())
                         },
                         new
                         {
                             Id = 4,
                             Name = "Уголок",
-                            Structure = System.Text.Json.JsonDocument.Parse("{\"Высота\":{\"var\":\"l\"},\"Ширина\":{\"var\":\"w\"},\"Толщина\":{\"var\":\"t\"}}", new System.Text.Json.JsonDocumentOptions())
+                            Structure = System.Text.Json.JsonDocument.Parse("[{\"Var\":\"l\",\"Name\":\"\\u0412\\u044B\\u0441\\u043E\\u0442\\u0430\",\"Func\":null},{\"Var\":\"w\",\"Name\":\"\\u0428\\u0438\\u0440\\u0438\\u043D\\u0430\",\"Func\":null},{\"Var\":\"t\",\"Name\":\"\\u0422\\u043E\\u043B\\u0449\\u0438\\u043D\\u0430\",\"Func\":null}]", new System.Text.Json.JsonDocumentOptions())
                         });
                 });
 
