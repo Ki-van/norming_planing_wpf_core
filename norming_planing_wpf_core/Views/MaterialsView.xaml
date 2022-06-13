@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="norming_planing_wpf_core.MaterialsView"
+﻿<UserControl x:Name="userControl" x:Class="norming_planing_wpf_core.MaterialsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -31,16 +31,16 @@
             AutoGenerateColumns="False"
             RowDetailsVisibilityMode="VisibleWhenSelected" 
             SelectionChanged="materialTypesDataGrid_SelectionChanged"
-           
             >
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name, Mode=TwoWay}"/>
-            </DataGrid.Columns>
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="materialTypesDataGridRow_DoubleClick"/>
                 </Style>
+
             </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name, Mode=TwoWay}"/>
+            </DataGrid.Columns>
         </DataGrid>
         <TextBlock HorizontalAlignment="Center" Grid.Column="1">Материалы</TextBlock>
         <DataGrid
@@ -52,8 +52,6 @@
             RowDetailsVisibilityMode="VisibleWhenSelected"
             AddingNewItem="materialsDataGrid_AddingNewItem"
             IsReadOnly="False" CellEditEnding="materialsDataGrid_CellEditEnding"
-            >
-           
-            </DataGrid>
+            />
     </Grid>
 </UserControl>

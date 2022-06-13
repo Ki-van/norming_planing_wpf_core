@@ -10,30 +10,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace norming_planing_wpf_core
 {
     /// <summary>
-    /// Interaction logic for MaterialTypeView.xaml
+    /// Interaction logic for UserCollectionView.xaml
     /// </summary>
-    public partial class MaterialTypeView : Window
+    public partial class UserCollectionView : UserControl
     {
-        public MaterialTypeView()
+        public UserCollectionView()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-            Close();
+            (DataContext as UserCollectionViewModel).LoadModelsCommand.Execute(this);
         }
     }
 }

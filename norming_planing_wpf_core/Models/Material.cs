@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CodingSeb.ExpressionEvaluator;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -33,6 +34,37 @@ namespace norming_planing_wpf_core
                     ?? new ObservableCollection<ScalarItem>();
             }
             set { _scalarItems = value; }
+        }
+        public void ComputeDependencies()
+        {
+            Dictionary<string, object> variables = new Dictionary<string, object>();
+            Dictionary<ScalarItem, string> deps = new();
+            foreach(ScalarItem item in ScalarItems)
+            {
+                string? func = Type.StructureItems.First(predicate: sti => sti.Var == item.Var).Func;
+                if(func == null)
+                {
+                    variables.Add(item.Var, item.Val);
+                }
+                else
+                {
+                    deps.Add(item, func);
+                }
+            }
+
+            ExpressionEvaluator expression = new ExpressionEvaluator(variables);
+
+           foreach (var item in deps)
+            {
+                try
+                {
+                    item.Key.Val = (double)expression.Evaluate(item.Value);
+                }
+                catch (Exception e)
+                {
+                    item.Key.Val = -1;
+                }
+            }
         }
         public void SerializeModel()
         {
@@ -74,23 +106,23 @@ namespace norming_planing_wpf_core
         {
             get
             {
-                return _structureItems 
-                    ??= Structure.Deserialize<ObservableCollection<StructureItem>>() 
+                return _structureItems
+                    ??= Structure.Deserialize<ObservableCollection<StructureItem>>()
                     ?? new ObservableCollection<StructureItem>();
             }
             set { _structureItems = value; }
-        }
+        } 
         public void SerializeModel()
         {
             Structure = JsonSerializer.SerializeToDocument(StructureItems);
         }
-
-        public ICollection<Material> Materials { get; set; } = new ObservableCollection<Material>();
+        public ObservableCollection<Material> Materials { get; set; } = new();
         public void Dispose() => Structure?.Dispose();
     }
 
     public class StructureItem: IEquatable<StructureItem>
     {
+        public StructureItem() : this("", "", null) { }
         public StructureItem(string name, string var,  string? func = null)
         {
             Var = var;

@@ -26,6 +26,7 @@ namespace norming_planing_wpf_core
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime Deadline { get; set; } = DateTime.UtcNow;
+        public uint Priority { get; set; } = 0;
         public DraftStatus Status { get; set; }
         
         public int CustomerId { get; set; }

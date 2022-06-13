@@ -63,6 +63,8 @@
             </Grid>
             <TextBlock Text="Срок сдачи проекта" />
             <DatePicker SelectedDate="{Binding ExploredDraft.Deadline, Mode=TwoWay}" SelectedDateFormat="Long"  />
+            <TextBlock Text="Приоритет" />
+            <TextBox Text="0" />
         </StackPanel>
         <TextBlock Grid.Row="0" Grid.Column="1" Text="Отправочные маки" HorizontalAlignment="Center"/>
         <DataGrid

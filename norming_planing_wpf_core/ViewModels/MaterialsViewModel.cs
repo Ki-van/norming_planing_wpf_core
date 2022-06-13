@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Data;
+using System.ComponentModel;
 
 namespace norming_planing_wpf_core
 {
@@ -16,9 +17,12 @@ namespace norming_planing_wpf_core
     {
         private AcszmkdbContext db;
         private ICommand _openMaterialTypeExplorerCommand;
+        private ICommand _recomputeMaterialDependenciesCommand;
+        
         public string Name => "Металлопрофиль";
         public ObservableCollection<MaterialType> MaterialTypes { get; set; }
-        public MaterialType materialTypeSelectedItem { get; set; }
+      
+        #region Commands
         public ICommand OpenMaterialTypeExplorerCommand
         {
             get => _openMaterialTypeExplorerCommand ??= new RelayCommand(async (p) =>
@@ -44,7 +48,16 @@ namespace norming_planing_wpf_core
                                  });
             set { _openMaterialTypeExplorerCommand = value; }
         }
+        public ICommand RecomputeMaterialDependenciesCommand
+        {
+            get => _recomputeMaterialDependenciesCommand ??= new RelayCommand( (p) =>
+            {
+                (p as Material).ComputeDependencies();
 
+            });
+            set { _recomputeMaterialDependenciesCommand = value; }
+        }
+        #endregion
         public MaterialsViewModel()
         {
             InitiateVM();

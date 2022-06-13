@@ -5,8 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:norming_planing_wpf_core"
         mc:Ignorable="d"
-        Title="Тип материала" Height="450" Width="800">
-    <Grid>
-        
+        Title="Тип материала" Height="450" Width="452">
+    <Window.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="LightGray" />
+            <Setter Property="AlternatingRowBackground" Value="White" />
+        </Style>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="Наименование типа материала"/>
+            <TextBox Text="{Binding Name}"/>
+            <TextBlock Text="Параметры материала"/>
+            <DataGrid x:Name="dataGrid"
+                AutoGenerateColumns="False"
+                ItemsSource="{Binding StructureItems}"
+                IsReadOnly="False"      
+                >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Имя параметра" Binding="{Binding Name, Mode=TwoWay}" />
+                    <DataGridTextColumn Header="Обозначение" Binding="{Binding Var, Mode=TwoWay}" />
+                    <DataGridTextColumn Header="Функция (Если параметр вычисляемый)" Binding="{Binding Func, Mode=TwoWay}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"  Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Button Width="55" Margin="0,0,5,0" Click="Button_Click">Ок</Button>
+            <Button Width="55" Click="Button_Click_1">Отмена</Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -26,6 +26,7 @@ namespace norming_planing_wpf_core
             PageViewModels.Add(new TPViewModel());
             PageViewModels.Add(new PlanningViewModel());
             PageViewModels.Add(new CatalogsViewModel());
+            PageViewModels.Add(new UserCollectionViewModel());
 
             // Set starting page
             CurrentPageViewModel = PageViewModels[0];

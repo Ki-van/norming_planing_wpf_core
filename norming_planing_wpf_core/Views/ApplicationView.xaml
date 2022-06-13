@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:norming_planing_wpf_core"
         mc:Ignorable="d"
-        Title="ApplicationView" Height="450" Width="800">
+        Title="ApplicationView" Height="592" Width="1035" >
     <Window.DataContext>
         <local:ApplicationViewModel/>
     </Window.DataContext>
@@ -21,6 +21,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type local:CatalogsViewModel}">
             <local:CatalogsView/>
+        </DataTemplate> 
+        <DataTemplate DataType="{x:Type local:UserCollectionViewModel}">
+            <local:UserCollectionView/>
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
@@ -67,6 +70,6 @@
         </Border>
 
         <ContentControl Content="{Binding CurrentPageViewModel}" />
-        
+
     </DockPanel>
 </Window>

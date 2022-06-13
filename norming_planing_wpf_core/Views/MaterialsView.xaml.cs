@@ -46,11 +46,11 @@ namespace norming_planing_wpf_core
                         Binding = new Binding(String.Format("ScalarItems[{0}].Val", ((MaterialType)e.AddedItems[0]).StructureItems.IndexOf(item)))
                         {
                             Mode = BindingMode.TwoWay,
+                            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                         },
                         IsReadOnly = item.Func != null
                     });
                 }
-                materialsDataGrid.Items.Refresh();
             }
         }
 
@@ -67,13 +67,17 @@ namespace norming_planing_wpf_core
 
             e.NewItem = new Material
             {
-                ScalarItems = si
+                ScalarItems = si,
+                Type = (MaterialType)materialTypesDataGrid.SelectedItem
             };
         }
 
         private void materialsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-
+            if(((Binding)((DataGridTextColumn)e.Column).Binding).Path.Path.StartsWith("ScalarItems"))
+                ((MaterialsViewModel)DataContext).RecomputeMaterialDependenciesCommand.Execute(materialsDataGrid.SelectedItem);
+            ((DataGrid)sender).ItemsSource = null;
+            ((DataGrid)sender).ItemsSource = ((MaterialType)materialTypesDataGrid.SelectedItem).Materials;
         }
     }
 }

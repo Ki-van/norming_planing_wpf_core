@@ -24,5 +24,10 @@ namespace norming_planing_wpf_core
         {
             InitializeComponent();
         }
+
+        private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
