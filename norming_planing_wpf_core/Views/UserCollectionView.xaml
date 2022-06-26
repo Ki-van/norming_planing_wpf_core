@@ -31,12 +31,12 @@
         <DataGrid
               Name ="UserCollectionValuesDataGrid"
             Grid.Column="1"
-            ItemsSource="{Binding SelectedItem.Values, ElementName=UserCollectionDataGrid}"
+            ItemsSource="{Binding SelectedItem.Items, ElementName=UserCollectionDataGrid}"
             AutoGenerateColumns="False"
             RowDetailsVisibilityMode="VisibleWhenSelected"
             >
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Значение" Binding="{Binding Path=., Mode=TwoWay}"/>
+                <DataGridTextColumn Header="Значение" Binding="{Binding Value, Mode=TwoWay}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

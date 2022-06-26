@@ -59,20 +59,13 @@
                         <Button Style="{StaticResource SquareButton}">-</Button>
                     </StackPanel>
                         <TreeView Grid.Row="1">
-                        <TreeViewItem Header="Плазменная резка" IsExpanded="True">
+                            <TreeViewItem Header="Резка" IsExpanded="True">
                                 <TreeViewItem Header="Сегмент кольца жёсткости" />
                                 <TreeViewItem Header="Пластина кольца жёсткости" />
                                 <TreeViewItem Header="Элемент днища" />
                                 <TreeViewItem Header="Элемент днища" />
                                 <TreeViewItem Header="Элемент днища" />
                                 <TreeViewItem Header="Элемент горловины (рыбка)" />
-                        </TreeViewItem>
-                            <TreeViewItem Header="Раскрой на ленточной пиле" IsExpanded="True">
-                                <TreeViewItem Header="Диафрагма кольца жёсткости" />
-                                <TreeViewItem Header="Элемент лестницы внутренней" />
-                                <TreeViewItem Header="Элемент лестницы внутренней" />
-                                <TreeViewItem Header="Элемент патрубка под КИПиА" />
-                                <TreeViewItem Header="Элемент вентиляционного патрубка" />
                             </TreeViewItem>
                             <TreeViewItem Header="Сборка" IsExpanded="True">
                                 <TreeViewItem Header="Установка краевых рёбер жёсткости на карту" />
@@ -86,40 +79,37 @@
                         <TextBlock HorizontalAlignment="Center">Параметры ТО</TextBlock>
                         <TextBlock>Тип ТО</TextBlock>
                         <ComboBox SelectedIndex="0">
-                            <TextBlock>Сборка</TextBlock>
+                            <TextBlock>Резка</TextBlock>
                         </ComboBox>
                         <TextBlock>Предмет/Цель труда</TextBlock>
-                        <ListView MaxHeight="70">
+                        <ComboBox SelectedIndex="0">
                             <TextBlock>Деталь 1</TextBlock>
-                            <TextBlock>Деталь 2</TextBlock>
-                            <TextBlock>Деталь 3</TextBlock>
-                            <TextBlock>Изделие 1</TextBlock>
-                            <TextBlock>Изделие 2</TextBlock>
-                            <TextBlock>Изделие 3</TextBlock>
-                        </ListView>
+                        </ComboBox>
                         <TextBlock>Количество операций</TextBlock>
                         <TextBox>1</TextBox>
-                        <TextBlock>Новое изделие</TextBlock>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox>Изделие 3</TextBox>
-                            <TextBox Grid.Column="1" MinWidth="50">1</TextBox>
-                            <TextBox Grid.Column="2" MinWidth="50">0</TextBox>
-                        </Grid>
                         
+                        <Expander  Margin="0,10,0,0" Header="Параметры типа">
+                            <DataGrid>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Имя" />
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Expander>
                         
                         <TextBlock  Margin="0,10,0,0" HorizontalAlignment="Center">Нормирование</TextBlock>
                         <TextBlock>Количество предметов/целей труда: 2</TextBlock>
-                        <TextBlock>Масса конструкции: 200 </TextBlock>
-                        <TextBlock>Количество рабочих в звене: 1</TextBlock>
+                        <TextBlock>Толщина: 0,001</TextBlock>
                         <TextBlock>Норма времени, ч </TextBlock>
-                        <TextBox>2,7</TextBox>
+                        <TextBox>0,06</TextBox>
                         <TextBlock>Расценка, руб</TextBlock>
-                        <TextBox>985,5</TextBox>
+                        <TextBox>200</TextBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button>Рассчитать</Button>
+                        </StackPanel>
+                        <Expander Header="Звено">
+
+                        </Expander>
                     </StackPanel>
                     <DockPanel Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
                         <Button Width="70" Margin="0,0,5,0" >Сохранить</Button>

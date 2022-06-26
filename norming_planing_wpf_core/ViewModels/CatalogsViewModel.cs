@@ -17,6 +17,7 @@ namespace norming_planing_wpf_core
         {
             Catalogs.Add(new MaterialsViewModel());
             Catalogs.Add(new NormingMapsViewModel());
+            Catalogs.Add(new TOTypesViewModel());
 
             CurrentCatalog = Catalogs[0];
         }

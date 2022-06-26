@@ -1,0 +1,85 @@
+﻿<UserControl x:Name="userControl" x:Class="norming_planing_wpf_core.TOTypesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:norming_planing_wpf_core"
+             xmlns:e="clr-namespace:norming_planing_wpf_core.Extensions"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ListBox
+            ItemsSource="{Binding TOTypes}"
+            Margin="5"
+            MinWidth="100"
+            Grid.Row="1"
+            DisplayMemberPath="Name"
+            Name="TOTypesListBox"
+            />
+
+        <TextBlock Text="Параметры" Grid.Column="1" HorizontalAlignment="Center"/>
+        <StackPanel 
+            Margin="5" 
+            Orientation="Vertical" 
+            Grid.Column="1" 
+            Grid.Row="1" 
+            DataContext="{Binding SelectedItem, ElementName=TOTypesListBox}" >
+            
+            <TextBlock Text="Наименование"/>
+            <TextBox Text="{Binding Name}" />
+
+            <GroupBox Header="Число аргументов" Margin="0,3,0,0">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <local:ComparisonConverter x:Key="ComparisonConverter" />
+                    </StackPanel.Resources>
+                    <RadioButton GroupName="ArgumentTypes" Content="Один аргумент" IsChecked="{Binding Path=ArgumentCount, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static local:ArgumentCount.OneArgument}}" />
+                    <RadioButton GroupName="ArgumentTypes" Content="Несколько аргументов"  IsChecked="{Binding Path=ArgumentCount, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static local:ArgumentCount.MoreThanOne}}" />
+                </StackPanel>
+            </GroupBox>
+            <TextBlock Text="Параметры" Margin="0,3,0,0"/>
+            <DataGrid
+                ItemsSource="{Binding ParamsTypes}"
+                AutoGenerateColumns="False"
+                >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Имя параметра" Binding="{Binding Name}"/>
+                    <DataGridTemplateColumn Header="Тип параметра">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox 
+                                    IsEditable="True" 
+                                    ItemsSource="{Binding DataContext.ParamTypes, ElementName=userControl}"
+                                    DisplayMemberPath="Name"
+                                    SelectedValue="{Binding Identifyer, Mode=TwoWay}" 
+                                    SelectedValuePath="Identifyer" 
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Expander Header="Включенные работы" Margin="0,3,0,0">
+                <DataGrid 
+                ItemsSource="{Binding IncludedWorks}"
+                AutoGenerateColumns="False"
+                >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Наименование" Binding="{Binding .}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

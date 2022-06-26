@@ -29,7 +29,7 @@ namespace norming_planing_wpf_core
                 {
                     this.view = view as UserCollectionView;
                     db = new AcszmkdbContext();
-                    await db.UserCollections.LoadAsync();
+                    await db.UserCollections.Include(x => x.Items).LoadAsync();
                     UserCollections = db.UserCollections.Local.ToObservableCollection();
                     this.view.UserCollectionDataGrid.ItemsSource = UserCollections;
                     this.view.UserCollectionDataGrid.Items.Refresh();

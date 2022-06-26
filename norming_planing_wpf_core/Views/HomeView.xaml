@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:norming_planing_wpf_core"
+             xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.DataContext>
@@ -12,7 +13,7 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="Expander">
-            <Setter Property="FontSize" Value="18"></Setter>
+            <Setter Property="FontSize" Value="14"></Setter>
         </Style>
         <Style TargetType="ListBox">
             <Setter Property="FontSize" Value="14"></Setter>
@@ -20,8 +21,8 @@
     </UserControl.Resources>
     <Grid Background="White" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.38*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.19*" />
@@ -30,12 +31,17 @@
         </Grid.RowDefinitions>
         <StackPanel  Margin="20,0,5,0" Grid.Row="1">
             <Expander Header="Планируемые" IsExpanded="True">
-                <ListBox ItemsSource="{Binding Drafts}" SelectedItem="{Binding SelectedDraft, BindsDirectlyToSource=True}">
+                <ListBox ItemsSource="{Binding Path=Drafts}" SelectedItem="{Binding SelectedDraft}">
+                    <ListBox.Resources>
+                        <Style TargetType="ListBoxItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                        </Style>
+                    </ListBox.Resources>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="2">
+                            <StackPanel>
                                 <TextBlock FontSize="14" Text="{Binding Path=Name}" />
-                                <TextBlock Text="{Binding Path=Deadline}" />
+                                <TextBlock Text="{Binding Deadline, StringFormat=\{0:d\}}" />
                                 <TextBlock Text="{Binding Path=Customer.Name}" />
                             </StackPanel>
                         </DataTemplate>
@@ -45,6 +51,44 @@
             <Expander  Header="Завершенные" IsExpanded="False">
 
             </Expander>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <DataGrid
+                ItemsSource="{Binding SelectedDraft.Marks}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Name}" Header="Марка"/>
+                    <DataGridTextColumn Binding="{Binding TotalDuration, StringFormat=\{0:F1\}}" Header="Норма времени, ч"/>
+                    <DataGridTextColumn Binding="{Binding TotalPrice, StringFormat=\{0:F0\}}" Header="Расценка, руб"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBlock Text="Итого" Margin="0,5,0,0"/>
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <TextBlock Text="Сумма норм, ч: " />
+                <TextBlock Text="{Binding SelectedDraft.TotalDuration,StringFormat=\{0:F1\}}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <TextBlock Text="Сумма расценок, руб: " />
+                <TextBlock Text="{Binding SelectedDraft.TotalPrice, StringFormat=\{0:F0\} }" />
+            </StackPanel>
+            <TextBlock Text="Сотрудники" HorizontalAlignment="Center"/>
+            <DataGrid Margin="0,5,0,0" ItemsSource="{DynamicResource ResourceKey=reqs}" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Специальность"  Binding="{Binding Sec}"/>
+                    <DataGridTextColumn Header="Квалификация" Binding="{Binding Cval}"/>
+                    <DataGridTextColumn Header="Количество" Binding="{Binding Count}"/>
+                </DataGrid.Columns>
+                <DataGrid.Resources>
+                    <col:ArrayList x:Key="reqs">
+                        <local:EmployReq Sec="Слесарь" Cval="2" Count="1" />
+                        <local:EmployReq Sec="Сварщик" Cval="2" Count="1" />
+                        <local:EmployReq Sec="Моляр" Cval="1" Count="1" />
+                        
+                    </col:ArrayList>
+                </DataGrid.Resources>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </UserControl>

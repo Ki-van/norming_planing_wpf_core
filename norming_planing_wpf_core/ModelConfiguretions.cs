@@ -40,40 +40,6 @@ namespace norming_planing_wpf_core
             builder.HasAlternateKey(ep => ep.Position);
         }
     }
-    class TOConfiguration : IEntityTypeConfiguration<TO>
-    {
-        public void Configure(EntityTypeBuilder<TO> builder)
-        {
-            builder.HasMany(to => to.Details).WithMany(d => d.TOs);
-            builder.Property(to => to.OperationCount).HasDefaultValue((uint)1);
-            builder.HasMany(to => to.Assemblies)
-                .WithMany(a => a.TOs)
-                .UsingEntity<AssemblieEntry>(
-                    j => j
-                    .HasOne(ae => ae.Assemblie)
-                    .WithMany(a => a.AssemblieEntries)
-                    .HasForeignKey(ae => ae.AssemblieId),
-                    j => j
-                    .HasOne(ae => ae.TO)
-                    .WithMany(to => to.AssemblieEntries)
-                    .HasForeignKey(ae => ae.TOId),
-                    j =>
-                    {
-                        j.HasKey(j => new { j.TOId, j.AssemblieId });
-                        j.ToTable("AssemblieEntry");
-                    }
-                );
-        }
-    }
-    class TOTypeConfiguration : IEntityTypeConfiguration<TOType>
-    {
-        public void Configure(EntityTypeBuilder<TOType> builder)
-        {
-            builder.HasMany(tot => tot.Instruments).WithMany(i => i.TOTypes);
-            builder.Property(tot => tot.Params).HasJsonConversion();
-        }
-    }
-
     class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {
         public void Configure(EntityTypeBuilder<Employee> builder)

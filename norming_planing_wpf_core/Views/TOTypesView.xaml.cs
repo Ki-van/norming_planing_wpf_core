@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace norming_planing_wpf_core
 {
     /// <summary>
-    /// Interaction logic for HomeView.xaml
+    /// Interaction logic for TOTypesView.xaml
     /// </summary>
-    public partial class HomeView : UserControl
+    public partial class TOTypesView : UserControl
     {
-        public HomeView()
+        public TOTypesView()
         {
             InitializeComponent();
-        }
-
-        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            (this.DataContext as HomeViewModel).ExploreDraftCommand.Execute(null);
         }
     }
 }

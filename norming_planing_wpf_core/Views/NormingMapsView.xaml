@@ -5,44 +5,117 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:norming_planing_wpf_core"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded"
+             Name ="ucContext">
+    <UserControl.Resources>
+
+    </UserControl.Resources>
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <StackPanel>
-            <TextBlock Text="Карты нормирования" HorizontalAlignment="Center"/>
-            <ListView>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Наименование"  DisplayMemberBinding="{Binding Name}" />
-                    </GridView>
-                </ListView.View>
-                <ListView.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate>
-                                            <Expander IsExpanded="True">
-                                                <Expander.Header>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="14" VerticalAlignment="Bottom" />
-                                                        <TextBlock Text="{Binding ItemCount}" FontSize="14" FontStyle="Italic" Margin="10,0,0,0" VerticalAlignment="Bottom" />
-                                                    </StackPanel>
-                                                </Expander.Header>
-                                                <ItemsPresenter />
-                                            </Expander>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-                </ListView.GroupStyle>
-            </ListView>
+            <TextBlock Text="Карты нормирования" HorizontalAlignment="Center" />
+            <StackPanel Orientation="Horizontal"  Margin="0,5,0,0">
+                <Button Style="{StaticResource SquareButton}">+</Button>
+                <Button Style="{StaticResource SquareButton}">-</Button>
+            </StackPanel>
+        </StackPanel>
+        <ListView Name="NormingMapsListView" Grid.Row="1" Margin="5" SelectionChanged="NormingMapsListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Наименование"  DisplayMemberBinding="{Binding Name}" />
+                </GridView>
+            </ListView.View>
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <TextBlock Text="{Binding Name}" Foreground="Gray" FontSize="14" VerticalAlignment="Bottom" />
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>
+        <TextBlock Text="Параметры" HorizontalAlignment="Center" Grid.Column="1"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5" DataContext="{Binding SelectedItem, ElementName=NormingMapsListView}">
+            <TextBlock Text="Название"/>
+            <TextBox Text="{Binding Name}"/>
+            <TextBlock Text="Тип ТО"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox 
+                    Name="TOTyoesComboBox"
+                    SelectedValue="{Binding TOTypeId, Mode=TwoWay}" 
+                    SelectedValuePath="Id" 
+                    DisplayMemberPath="Name"
+                    />
+                <Button Grid.Column="1" Margin="0" Style = "{StaticResource SquareButton}" Content="+"/>
+            </Grid>
+            <TextBlock Text="Звено"/>
+            <DataGrid
+                 ItemsSource="{Binding MembersCvalification}"
+                 AutoGenerateColumns="False"
+                >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Path=Cvalification}" Header="Разряд" MinWidth="30" />
+                    <DataGridTextColumn Binding="{Binding Path=Count}" Header="Количество" MinWidth="30" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBlock Text="Расценка 1 рабочего за 1 час, руб"/>
+            <TextBox Text="{Binding OneHourPrice}"/>
+            <TextBlock Text="Область определения аргумета (Строки)"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="Масса конструкции"/>
+                <Button Grid.Column="1" Margin="0" Style = "{StaticResource SquareButton}" Content="..."/>
+            </Grid>
+            <TextBlock Text="Область определения аргумета (Столбцы)"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="Количество деталей"/>
+                <Button Grid.Column="1" Margin="0" Style = "{StaticResource SquareButton}" Content="..."/>
+            </Grid>
+            <Expander Header="Инструменты"/>
+        </StackPanel>
+        <TextBlock Text="Карта" HorizontalAlignment="Center" Grid.Column="2"/>
+        <StackPanel Grid.Column="2" Grid.Row="1"  Margin="5">
+            
+            <StackPanel Orientation="Horizontal" >
+                
+                
+                <DataGrid
+            Name="NormingMapDataGrid"
+            />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

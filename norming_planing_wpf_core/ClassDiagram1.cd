@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="norming_planing_wpf_core.Assemblie" Collapsed="true">
+    <Position X="13.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAIAAAAAAAAAAQAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Models\Assemblie.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TOs" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.AssemblieEntry" Collapsed="true">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAQAAAAAAAAAAAAAAAAAgAAgAAAAAAI=</HashCode>
+      <FileName>Models\Assemblie.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Detail" Collapsed="true">
+    <Position X="8.75" Y="4.5" Width="1.5" />
+    <AssociationLine Name="Material" Type="norming_planing_wpf_core.Material">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.038" Y="0.264" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="SteelGrade" Type="norming_planing_wpf_core.SteelGrade">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.012" Y="0.398" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AEAAAIAACAAIAAEAAAQgAAAAICAAAAAAEACCAAAAAAA=</HashCode>
+      <FileName>Models\Detail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Mark" />
+      <Property Name="Material" />
+      <Property Name="SteelGrade" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="TOs" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Customer" Collapsed="true">
+    <Position X="16.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Draft.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Draft" Collapsed="true">
+    <Position X="14" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAEAAAAAAAEACAAAAQAAAAAQBAAAAUBAAAAAAA=</HashCode>
+      <FileName>Models\Draft.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Customer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Employee" Collapsed="true">
+    <Position X="20.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJAAAAQAAAAAAAgABAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.TaskParticipation" Collapsed="true">
+    <Position X="23.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAQAAACAAAAAAAAAAAAAgCAAA=</HashCode>
+      <FileName>Models\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.EmployeePosition" Collapsed="true">
+    <Position X="22" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Instrument" Collapsed="true">
+    <Position X="11" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Instrument.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Mark" Collapsed="true">
+    <Position X="11" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAABAEAAAAAgAAQAAAAAQEAAAAABAAAAAAA=</HashCode>
+      <FileName>Models\Mark.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Draft" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.ScalarItem" Collapsed="true">
+    <Position X="20.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Material.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.QuantitativeEntity">
+    <Position X="11" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAIBAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Models.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.NormingMap" Collapsed="true">
+    <Position X="14" Y="6.5" Width="1.5" />
+    <AssociationLine Name="FirstArg" Type="norming_planing_wpf_core.NormsArgument">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.17" Y="0.168" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="SecondArg" Type="norming_planing_wpf_core.NormsArgument">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.045" Y="0.134" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="ParentMap" Type="norming_planing_wpf_core.NormingMap">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.012" Y="0.302" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACIAAAAAAAAIAAAABAAAQgAEAAEAAgEAAAAAAUAAA=</HashCode>
+      <FileName>Models\NormingMap.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TOType" />
+      <Property Name="FirstArg" />
+      <Property Name="SecondArg" />
+      <Property Name="ParentMap" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.MembersOneCvalification" Collapsed="true">
+    <Position X="18.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Models\NormingMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.NormsArgument" Collapsed="true">
+    <Position X="14" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAIAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\NormingMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.ShiftTask" Collapsed="true">
+    <Position X="22" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEGAAAEEAAIAAAAAAAgAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ShiftTask.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.SteelGrade" Collapsed="true">
+    <Position X="6.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\SteelGrade.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.TO" Collapsed="true">
+    <Position X="11" Y="6.5" Width="1.5" />
+    <AssociationLine Name="Previous" Type="norming_planing_wpf_core.TO">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.19" Y="0.36" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAAGAAACEAABAhABAAAAAAQgIAAAAEAAIQCCACBAAAA=</HashCode>
+      <FileName>Models\TO.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Previous" />
+      <Property Name="NormingMap" />
+      <Property Name="Mark" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Instruments" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.TOType">
+    <Position X="16" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgCAAAAAIAAABAAAAAAAAQAAAAAABgAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\TO.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Instruments" />
+      <Property Name="ParamsTypes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="norming_planing_wpf_core.EntityParamType" Collapsed="true">
+    <Position X="18.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAEAAAAAAA=</HashCode>
+      <FileName>Models\TO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.UserCollection" Collapsed="true">
+    <Position X="18.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\UserCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.UserCollectionItem" Collapsed="true">
+    <Position X="20.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAgAAAIAAA=</HashCode>
+      <FileName>Models\UserCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="norming_planing_wpf_core.Material" Collapsed="true">
+    <Position X="7.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAEIAAAAQAAQAAAAAAABAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\Material.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

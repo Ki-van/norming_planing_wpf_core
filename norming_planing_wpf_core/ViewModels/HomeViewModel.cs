@@ -14,21 +14,25 @@ namespace norming_planing_wpf_core
         private AcszmkdbContext db;
         private Draft? selectedDraft;
         public ObservableCollection<Draft> Drafts { get; set; }
+       
         public HomeViewModel()
         {
+            //Init();
             db = new AcszmkdbContext();
-            db.Drafts.Load();
+            db.Drafts.Include(d => d.Marks).ThenInclude(m => m.TechProcesses).Load();
             Drafts = db.Drafts.Local.ToObservableCollection();
-        }
+            selectedDraft = Drafts.FirstOrDefault();
 
-        
-        public Draft? SelectedDraft { get { return selectedDraft; } 
-            set
-            {
-                selectedDraft = value;
-                ExploreDraftCommand.Execute(selectedDraft);
-            } 
         }
+        async public void Init()
+        {
+            db = new AcszmkdbContext();
+            await db.Drafts.Include(d => d.Marks).ThenInclude(m => m.Details).LoadAsync();
+            Drafts = db.Drafts.Local.ToObservableCollection();
+            SelectedDraft = Drafts.FirstOrDefault();
+        } 
+        
+        public Draft? SelectedDraft { get { return selectedDraft; } set { selectedDraft = value; RaisePropertyChanged("SelectedDraft"); } }
 
         #region Commands
         private RelayCommand exploreDraftCommand;
@@ -36,9 +40,9 @@ namespace norming_planing_wpf_core
         {
             get {
                 if (exploreDraftCommand == null)
-                    exploreDraftCommand = new RelayCommand(draft =>
+                    exploreDraftCommand = new RelayCommand(p =>
                     {
-                        DraftExplorerView draftExplorerView = new DraftExplorerView(draft as Draft);
+                        DraftExplorerView draftExplorerView = new DraftExplorerView(SelectedDraft);
                         draftExplorerView.ShowDialog();
                     });
                 return exploreDraftCommand; 

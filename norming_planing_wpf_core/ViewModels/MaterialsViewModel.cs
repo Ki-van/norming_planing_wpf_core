@@ -19,7 +19,7 @@ namespace norming_planing_wpf_core
         private ICommand _openMaterialTypeExplorerCommand;
         private ICommand _recomputeMaterialDependenciesCommand;
         
-        public string Name => "Металлопрофиль";
+        public string Name => "Материалы";
         public ObservableCollection<MaterialType> MaterialTypes { get; set; }
       
         #region Commands

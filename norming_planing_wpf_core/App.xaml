@@ -3,6 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:norming_planing_wpf_core">
     <Application.Resources>
-         
+        <Style TargetType="{x:Type DataGrid}">
+            <Setter Property="RowBackground" Value="LightGray" />
+            <Setter Property="AlternatingRowBackground" Value="White" />
+        </Style>
+        <Style TargetType="Button" x:Key="SquareButton">
+            <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="Margin" Value="5, 0, 0, 5" />
+        </Style>
     </Application.Resources>
 </Application>

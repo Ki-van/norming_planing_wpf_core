@@ -24,5 +24,16 @@ namespace norming_planing_wpf_core
         {
             InitializeComponent();
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as NormingMapsViewModel).LoadModelsCommand.Execute(this);
+        }
+
+        private void NormingMapsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.AddedItems.Count > 0)
+                (DataContext as NormingMapsViewModel).ChangNormingMapCommand.Execute(e.AddedItems[0]);
+        }
     }
 }
